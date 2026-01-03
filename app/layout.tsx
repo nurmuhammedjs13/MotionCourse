@@ -3,6 +3,7 @@
 import "./global.scss";
 import LayoutClient from "./components/LayoutClient";
 import { Provider } from "react-redux";
+import logo from "@/assets/Icons/Logo.svg";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "../src/redux/store";
 
@@ -14,9 +15,16 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
+                <title>MOTION WEB ACADEMY</title>
+                <meta
+                    name="description"
+                    content="Изучайте Python, Django, JavaScript и React с Motion Web Academy. Структурированные видеоуроки, групповые чаты и персональная поддержка."
+                />
                 <link
-                    rel="stylesheet"
-                    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                    rel="icon"
+                    type="image/svg"
+                    sizes="32x32"
+                    href="/Logo.svg"
                 />
             </head>
 

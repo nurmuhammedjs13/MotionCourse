@@ -1,0 +1,91 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+.Main {
+    background: rgb(0, 0, 0);
+    height: 110vh;
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+        .hero {
+            display: flex;
+            padding: 100px 0 0 0;
+            align-items: center;
+            flex-direction: column;
+            align-content: center;
+            gap: 20px;
+            justify-content: center;
+            .titleBlock {
+                display: flex;
+                align-items: center;
+
+                flex-direction: column;
+                gap: 3px;
+                .title1 {
+                    color: red;
+                    font-size: 54px;
+                }
+                .title2 {
+                    color: rgb(255, 255, 255);
+                    font-size: 54px;
+                }
+            }
+            .titleInfo {
+                font-family: "Playfair Display", serif;
+                letter-spacing: 0.02em;
+                font-style: normal;
+                text-align: center;
+                font-optical-sizing: auto;
+                font-size: 20px;
+                width: 50%;
+                font-weight: 400;
+                color: white;
+                line-height: 2;
+            }
+
+            .heroButton {
+                background: black;
+                color: white;
+                padding: 18px 44px;
+                box-shadow: 5px 5px 0 rgb(255, 0, 0);
+                transition: all 0.3s ease-in-out;
+                font-size: 20px;
+                font-weight: 600;
+                border: rgb(255, 255, 255) solid 4px;
+                &:hover {
+                    background-color: #ff0000;
+                    color: white;
+                    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+                    transform: translateY(-2px);
+                }
+            }
+        }
+        .courseInfo {
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            .infoBlock {
+                border: white solid 4px;
+                display: flex;
+                padding: 25px;
+                transition: all 0.3s ease-in-out;
+
+                box-shadow: 8px 8px 0 rgb(255, 0, 0);
+                flex-direction: column;
+                gap: 12px;
+                &:hover {
+                    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+                    transform: translateY(-5px);
+                }
+            }
+            .infoTitle {
+                font-size: 23px;
+                color: red;
+            }
+            .info {
+                color: white;
+                font-size: 14px;
+            }
+        }
+    }
+}

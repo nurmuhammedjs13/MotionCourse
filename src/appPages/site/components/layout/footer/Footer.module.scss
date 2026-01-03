@@ -1,0 +1,146 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+
+.footer {
+    background: black;
+    padding: 25px 0;
+    border-top: white solid 4px;
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        .topBlockFooter {
+            display: flex;
+            flex-direction: row;
+            align-content: center;
+            justify-content: space-between;
+            gap: 20px;
+            .firstTopBlock {
+                display: flex;
+                width: 30ch;
+                flex-direction: column;
+                gap: 10px;
+                .footerLogo {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    cursor: pointer;
+                    flex-direction: row;
+                    .logo {
+                        width: 80px;
+                        height: auto;
+                    }
+                    .logoTextBlock {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 5px;
+                        align-content: center;
+                        justify-content: center;
+                        .logoText1 {
+                            color: white;
+                            font-size: 24px;
+                        }
+                        .logoText2 {
+                            color: rgb(255, 0, 0);
+                            font-size: 24px;
+                        }
+                    }
+                }
+                .footerLogoInfo {
+                    color: gray;
+                    font-size: 14px;
+                    font-family: "Playfair Display", serif;
+                    letter-spacing: 0.02em;
+                    font-weight: 600;
+                }
+            }
+            .secondTopBlock {
+                padding: 0 220px 0 0;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                .title {
+                    color: rgb(255, 0, 0);
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+                .footerNavs {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    a {
+                        color: white;
+                        font-family: "Playfair Display", serif;
+                        letter-spacing: 0.02em;
+                        font-weight: 600;
+                        font-size: 15px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        &:hover {
+                            color: red;
+                            transform: translateX(3px);
+                        }
+                    }
+                }
+            }
+            .thirstTopBlock {
+                display: flex;
+                padding: 0 100px 0 0;
+                flex-direction: column;
+                gap: 10px;
+                .title {
+                    color: rgb(255, 0, 0);
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+                .contactsContent {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    .footerContacts {
+                        transition: all 0.3s ease;
+                        color: white;
+                        font-size: 15px;
+                        font-family: "Playfair Display", serif;
+                        letter-spacing: 0.02em;
+                        font-weight: 600;
+                        cursor: pointer;
+                        &:hover {
+                            color: red;
+                            transform: translateX(3px);
+                        }
+                    }
+                }
+            }
+        }
+        .hr {
+            height: 1px;
+            background: white;
+            border-radius: 10px;
+        }
+        .bottomBlockFooter {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            justify-content: space-between;
+            text-align: center;
+            .bottomFirstBlock {
+                color: gray;
+                font-size: 12px;
+            }
+            .bottomSecondBlock {
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+                .bottomButton {
+                    cursor: pointer;
+                    color: white;
+                    font-size: 12px;
+                    transition: all 0.3s;
+                    &:hover {
+                        color: red;
+                    }
+                }
+            }
+        }
+    }
+}

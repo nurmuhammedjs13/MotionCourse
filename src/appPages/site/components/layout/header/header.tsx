@@ -1,7 +1,7 @@
 "use client";
 
 import style from "./Header.module.scss";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ProfileIcon from "@/assets/Icons/profile.jpg";
@@ -20,8 +20,14 @@ const Links = [
 
 const Header: React.FC = () => {
     const router = useRouter();
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
     const handleBookClick = (): void => {
-        router.push(`/login/`);
+        router.push("/login");
+    };
+
+    const toggleMenu = (): void => {
+        setIsMenuOpen(!isMenuOpen);
     };
 
     return (
@@ -38,6 +44,7 @@ const Header: React.FC = () => {
                             <span className={style.logoText2}>Web</span>
                         </div>
                     </div>
+
                     <div className={style.navs}>
                         {Links.map((link) => (
                             <a
@@ -49,16 +56,58 @@ const Header: React.FC = () => {
                             </a>
                         ))}
                     </div>
-                    <button
-                        onClick={handleBookClick}
-                        className={style.buttonBlock}
+
+                    <div className={style.rightBlock}>
+                        <button
+                            onClick={handleBookClick}
+                            className={style.buttonBlock}
+                        >
+                            <Image
+                                className={style.profile}
+                                src={ProfileIcon}
+                                alt="profile"
+                            />
+                        </button>
+
+                        <button
+                            onClick={toggleMenu}
+                            className={style.burgerButton}
+                            aria-label="Toggle menu"
+                        >
+                            <span
+                                className={`${style.burgerLine} ${
+                                    isMenuOpen ? style.open : ""
+                                }`}
+                            ></span>
+                            <span
+                                className={`${style.burgerLine} ${
+                                    isMenuOpen ? style.open : ""
+                                }`}
+                            ></span>
+                            <span
+                                className={`${style.burgerLine} ${
+                                    isMenuOpen ? style.open : ""
+                                }`}
+                            ></span>
+                        </button>
+                    </div>
+
+                    <nav
+                        className={`${style.mobileMenu} ${
+                            isMenuOpen ? style.active : ""
+                        }`}
                     >
-                        <Image
-                            className={style.profile}
-                            src={ProfileIcon}
-                            alt="profile"
-                        />
-                    </button>
+                        {Links.map((link) => (
+                            <a
+                                key={link.name}
+                                className={style.mobileNav}
+                                href={link.href}
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                {link.name}
+                            </a>
+                        ))}
+                    </nav>
                 </div>
             </div>
         </header>

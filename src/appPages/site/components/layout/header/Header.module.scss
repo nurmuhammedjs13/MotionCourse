@@ -1,6 +1,8 @@
 .header {
     background-color: #000000;
     border-bottom: white solid 4px;
+    position: relative;
+
     .content {
         display: flex;
         padding: 5px 0;
@@ -8,37 +10,45 @@
         align-items: center;
         gap: 10px;
         justify-content: space-between;
+        position: relative;
+
         .logoButton {
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
             flex-direction: row;
+
             .logo {
                 width: 80px;
                 height: 100%;
             }
+
             .logoTextBlock {
                 display: flex;
                 flex-direction: row;
                 gap: 5px;
                 align-content: center;
                 justify-content: center;
+
                 .logoText1 {
                     color: white;
                     font-size: 24px;
                 }
+
                 .logoText2 {
                     color: rgb(255, 0, 0);
                     font-size: 24px;
                 }
             }
         }
+
         .navs {
             display: flex;
             flex-direction: row;
             align-items: center;
             gap: 15px;
+
             .nav {
                 color: white;
                 text-decoration: none;
@@ -51,6 +61,7 @@
                 border-radius: 3px;
                 font-size: 18px;
                 font-weight: 500;
+
                 &:hover {
                     background-color: #ff0000;
                     color: white;
@@ -59,17 +70,214 @@
                 }
             }
         }
+
+        .rightBlock {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .buttonBlock {
             border: none;
             background: none;
+            cursor: pointer;
+            padding: 0;
+
             .profile {
                 width: 40px;
                 cursor: pointer;
                 transition: all 0.3s ease-in-out;
                 height: auto;
                 border-radius: 100%;
+
                 &:hover {
                     transform: translateY(-2px);
+                }
+            }
+        }
+
+        .burgerButton {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+
+            .burgerLine {
+                width: 30px;
+                height: 3px;
+                background-color: white;
+                border-radius: 10px;
+                transition: all 0.3s ease-in-out;
+                transform-origin: center;
+
+                &.open:nth-child(1) {
+                    transform: rotate(45deg) translateY(8px);
+                }
+
+                &.open:nth-child(2) {
+                    opacity: 0;
+                }
+
+                &.open:nth-child(3) {
+                    transform: rotate(-45deg) translateY(-8px);
+                }
+            }
+        }
+
+        .mobileMenu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #000000;
+            flex-direction: column;
+            padding: 20px;
+            gap: 15px;
+            border-bottom: white solid 2px;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+
+            &.active {
+                max-height: 500px;
+                opacity: 1;
+            }
+
+            .mobileNav {
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+                padding: 15px 20px;
+                text-align: center;
+                transition: all 0.3s ease-in-out;
+                box-shadow: 5px 5px 0 rgb(255, 0, 0);
+                border: rgb(255, 255, 255) solid 3px;
+                border-radius: 3px;
+                font-size: 18px;
+                font-weight: 500;
+
+                &:hover {
+                    background-color: #ff0000;
+                    color: white;
+                    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+                }
+            }
+        }
+    }
+}
+
+// Адаптив для 1024px
+@media (max-width: 1024px) {
+    .header {
+        .content {
+            .logoButton {
+                .logo {
+                    width: 70px;
+                }
+
+                .logoTextBlock {
+                    .logoText1,
+                    .logoText2 {
+                        font-size: 22px;
+                    }
+                }
+            }
+
+            .navs {
+                gap: 12px;
+
+                .nav {
+                    padding: 8px 16px;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}
+
+// Адаптив для 768px - появление бургер-меню
+@media (max-width: 768px) {
+    .header {
+        .content {
+            .logoButton {
+                .logo {
+                    width: 60px;
+                }
+
+                .logoTextBlock {
+                    .logoText1,
+                    .logoText2 {
+                        font-size: 20px;
+                    }
+                }
+            }
+
+            .navs {
+                display: none;
+            }
+
+            .burgerButton {
+                display: flex;
+            }
+
+            .mobileMenu {
+                display: flex;
+            }
+        }
+    }
+}
+
+// Адаптив для 480px
+@media (max-width: 480px) {
+    .header {
+        .content {
+            padding: 10px 0;
+
+            .logoButton {
+                gap: 5px;
+
+                .logo {
+                    width: 50px;
+                }
+
+                .logoTextBlock {
+                    .logoText1,
+                    .logoText2 {
+                        font-size: 18px;
+                    }
+                }
+            }
+
+            .buttonBlock {
+                .profile {
+                    width: 35px;
+                }
+            }
+
+            .burgerButton {
+                width: 25px;
+                height: 20px;
+
+                .burgerLine {
+                    width: 25px;
+                    height: 2.5px;
+                }
+            }
+
+            .mobileMenu {
+                padding: 15px;
+
+                .mobileNav {
+                    padding: 12px 15px;
+                    font-size: 16px;
                 }
             }
         }

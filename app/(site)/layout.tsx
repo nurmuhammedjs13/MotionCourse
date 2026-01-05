@@ -1,3 +1,4 @@
+import ProtectedRoute from "@/components/ProtectedRoute";
 import LayoutSite from "@/appPages/site/components/layout/LayoutSite";
 
 export default function SiteLayout({
@@ -5,5 +6,9 @@ export default function SiteLayout({
 }: {
     children: React.ReactNode;
 }) {
-    return <LayoutSite>{children}</LayoutSite>;
+    return (
+        <ProtectedRoute>
+            <LayoutSite>{children}</LayoutSite>
+        </ProtectedRoute>
+    );
 }

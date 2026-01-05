@@ -1,11 +1,13 @@
 "use client";
 
 import style from "./Header.module.scss";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ProfileIcon from "@/assets/Icons/profile.jpg";
 import Logo from "@/assets/Icons/Logo.svg";
+import { tokenService } from "@/utils/token";
+import { useLogoutMutation } from "@/redux/api/auth";
 
 const Links = [
     {
@@ -20,10 +22,54 @@ const Links = [
 
 const Header: React.FC = () => {
     const router = useRouter();
+    const [logout] = useLogoutMutation();
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [user, setUser] = useState<{
+        username: string;
+        email: string;
+    } | null>(null);
+    const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
 
-    const handleBookClick = (): void => {
-        router.push("/login");
+    useEffect(() => {
+        // Проверяем авторизацию при монтировании компонента
+        const checkAuth = () => {
+            const authenticated = tokenService.isAuthenticated();
+            setIsAuthenticated(authenticated);
+            if (authenticated) {
+                setUser(tokenService.getUser());
+            }
+        };
+
+        checkAuth();
+
+        // Проверяем авторизацию при изменении localStorage
+        const handleStorageChange = () => {
+            checkAuth();
+        };
+
+        window.addEventListener("storage", handleStorageChange);
+        return () => window.removeEventListener("storage", handleStorageChange);
+    }, []);
+
+    const handleProfileClick = (): void => {
+        if (isAuthenticated) {
+            setShowProfileMenu(!showProfileMenu);
+        } else {
+            router.push("/login");
+        }
+    };
+
+    const handleLogout = async (): Promise<void> => {
+        try {
+            await logout().unwrap();
+            setIsAuthenticated(false);
+            setUser(null);
+            setShowProfileMenu(false);
+            router.push("/login");
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
     };
 
     const toggleMenu = (): void => {
@@ -58,16 +104,42 @@ const Header: React.FC = () => {
                     </div>
 
                     <div className={style.rightBlock}>
-                        <button
-                            onClick={handleBookClick}
-                            className={style.buttonBlock}
-                        >
-                            <Image
-                                className={style.profile}
-                                src={ProfileIcon}
-                                alt="profile"
-                            />
-                        </button>
+                        <div className={style.profileWrapper}>
+                            <button
+                                onClick={handleProfileClick}
+                                className={style.buttonBlock}
+                            >
+                                <Image
+                                    className={style.profile}
+                                    src={ProfileIcon}
+                                    alt="profile"
+                                />
+                                {isAuthenticated && user && (
+                                    <span className={style.username}>
+                                        {user.username}
+                                    </span>
+                                )}
+                            </button>
+
+                            {isAuthenticated && showProfileMenu && (
+                                <div className={style.profileMenu}>
+                                    <div className={style.profileInfo}>
+                                        <p className={style.profileName}>
+                                            {user?.username}
+                                        </p>
+                                        <p className={style.profileEmail}>
+                                            {user?.email}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className={style.logoutButton}
+                                    >
+                                        Выйти
+                                    </button>
+                                </div>
+                            )}
+                        </div>
 
                         <button
                             onClick={toggleMenu}
@@ -107,6 +179,14 @@ const Header: React.FC = () => {
                                 {link.name}
                             </a>
                         ))}
+                        {isAuthenticated && (
+                            <button
+                                onClick={handleLogout}
+                                className={style.mobileLogout}
+                            >
+                                Выйти
+                            </button>
+                        )}
                     </nav>
                 </div>
             </div>

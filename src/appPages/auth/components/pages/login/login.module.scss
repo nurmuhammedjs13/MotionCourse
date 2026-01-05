@@ -31,6 +31,16 @@
                 text-align: center;
             }
 
+            .error {
+                background-color: #fee;
+                border: 1px solid #fcc;
+                color: #c33;
+                padding: 12px;
+                border-radius: 6px;
+                font-size: 14px;
+                text-align: center;
+            }
+
             .Block {
                 display: flex;
                 flex-direction: column;
@@ -64,6 +74,11 @@
                     transform: translateY(-2px);
                     box-shadow: 0 5px 10px rgba(255, 0, 0, 0.5);
                 }
+
+                &:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
             }
         }
     }
@@ -91,6 +106,10 @@
                     font-size: 28px;
                 }
 
+                .error {
+                    font-size: 13px;
+                }
+
                 .Block .Text,
                 .Block .input {
                     font-size: 14px;
@@ -114,6 +133,10 @@
 
                 .title {
                     font-size: 24px;
+                }
+
+                .error {
+                    font-size: 12px;
                 }
 
                 .Block .Text,

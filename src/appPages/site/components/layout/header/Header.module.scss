@@ -77,11 +77,18 @@
             gap: 15px;
         }
 
+        .profileWrapper {
+            position: relative;
+        }
+
         .buttonBlock {
             border: none;
             background: none;
             cursor: pointer;
             padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
 
             .profile {
                 width: 40px;
@@ -93,6 +100,59 @@
                 &:hover {
                     transform: translateY(-2px);
                 }
+            }
+
+            .username {
+                color: white;
+                font-size: 16px;
+                font-weight: 500;
+            }
+        }
+
+        .profileMenu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            min-width: 200px;
+            z-index: 1000;
+        }
+
+        .profileInfo {
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 12px;
+        }
+
+        .profileName {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .profileEmail {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .logoutButton {
+            width: 100%;
+            padding: 10px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+
+            &:hover {
+                background: #d32f2f;
             }
         }
 
@@ -170,6 +230,24 @@
                     box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
                 }
             }
+
+            .mobileLogout {
+                width: 100%;
+                padding: 12px;
+                background: #f44336;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                margin-top: 12px;
+                transition: background 0.3s ease;
+
+                &:hover {
+                    background: #d32f2f;
+                }
+            }
         }
     }
 }
@@ -199,6 +277,12 @@
                     font-size: 16px;
                 }
             }
+
+            .buttonBlock {
+                .username {
+                    font-size: 14px;
+                }
+            }
         }
     }
 }
@@ -222,6 +306,12 @@
 
             .navs {
                 display: none;
+            }
+
+            .buttonBlock {
+                .username {
+                    display: none;
+                }
             }
 
             .burgerButton {

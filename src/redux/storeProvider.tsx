@@ -1,9 +1,9 @@
 // src/redux/storeProvider.tsx
 "use client";
 
-import { useRef } from "react";
+import { useMemo } from "react";
 import { Provider } from "react-redux";
-import { makeStore } from "./store";
+import { makeStoreWithMiddleware } from "./store";
 import { AuthInitializer } from "@/components/AuthInitializer";
 
 export default function StoreProvider({
@@ -11,16 +11,12 @@ export default function StoreProvider({
 }: {
     children: React.ReactNode;
 }) {
-    // Используем useRef для гарантии, что store создаётся только один раз
-    const storeRef = useRef<ReturnType<typeof makeStore> | null>(null);
-
-    if (!storeRef.current) {
-        storeRef.current = makeStore();
-        console.log("🏪 [STORE_PROVIDER] Store создан");
-    }
+    const store = useMemo(() => {
+        return makeStoreWithMiddleware();
+    }, []);
 
     return (
-        <Provider store={storeRef.current}>
+        <Provider store={store}>
             <AuthInitializer />
             {children}
         </Provider>

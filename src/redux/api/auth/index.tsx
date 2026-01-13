@@ -17,7 +17,7 @@ export const authApi = api.injectEndpoints({
             }),
             keepUnusedDataFor: 300, // Кешируем на 5 минут
             providesTags: ["User"],
-            transformResponse: (response: any) => {
+            transformResponse: (response: unknown) => {
                 console.log("✅ [VALIDATE_TOKEN] Ответ от сервера:", response);
                 console.log(
                     "✅ [VALIDATE_TOKEN] Тип ответа:",
@@ -34,14 +34,21 @@ export const authApi = api.injectEndpoints({
                     userData
                 );
 
+                // Type guard для проверки структуры данных
+                const isValidUserData = (data: unknown): data is { username?: string; email?: string; user?: { username?: string; email?: string } } => {
+                    return typeof data === 'object' && data !== null;
+                };
+
+                const validData = isValidUserData(userData) ? userData : {};
+
                 return {
                     valid: true,
                     user: {
                         username:
-                            userData?.username ||
-                            userData?.user?.username ||
+                            validData?.username ||
+                            validData?.user?.username ||
                             "",
-                        email: userData?.email || userData?.user?.email || "",
+                        email: validData?.email || validData?.user?.email || "",
                     },
                 };
             },

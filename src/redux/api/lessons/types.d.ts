@@ -1,31 +1,30 @@
 namespace LESSONS {
-    type GetLessonsResponse = [
-        {
-            id: number;
-            course_image: string;
-            course_name: string;
-            description: string;
-            created_at: string;
-        }
-    ];
-
-    type GetLessonDetailResponce = {
+    interface LessonItem {
         id: number;
         course_image: string;
         course_name: string;
         description: string;
         created_at: string;
-        video_course: Array<{
-            id: number;
-            video: string;
-            description: string;
-        }>;
+    }
+
+    interface VideoItem {
+        id: number;
+        video: string;
+        description: string;
+    }
+
+    type GetLessonsResponse = LessonItem[];
+
+    type GetLessonDetailResponse = {
+        id: number;
+        course_image: string;
+        course_name: string;
+        description: string;
+        created_at: string;
+        video_course: VideoItem[];
     };
-    type GetLessonsResponse = GetLessonsResponse[];
 
     type GetLessonsRequest = void;
-
-    type GetLessonDetailResponce = GetLessonDetailResponce;
 
     type GetLessonDetailRequest = number;
 }

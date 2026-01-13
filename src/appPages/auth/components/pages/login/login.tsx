@@ -8,6 +8,13 @@ import { useAppSelector } from "@/redux/hooks";
 import Cookies from "js-cookie";
 import style from "./login.module.scss";
 
+interface ErrorResponse {
+    status?: number | string;
+    data?: {
+        detail?: string;
+    };
+}
+
 export default function Login() {
     const router = useRouter();
     const [login, { isLoading }] = useLoginMutation();
@@ -59,10 +66,11 @@ export default function Login() {
 
             console.log("➡️ [LOGIN] Редирект на /home");
             router.push("/home");
-        } catch (err: any) {
+        } catch (err) {
             // RTK Query возвращает ошибку в формате { status, data }
-            const status = err?.status;
-            const errorData = err?.data;
+            const error = err as ErrorResponse;
+            const status = error?.status;
+            const errorData = error?.data;
 
             console.log("❌ [LOGIN] Ошибка:", { status, errorData });
 
@@ -89,18 +97,7 @@ export default function Login() {
                     <h2 className={style.title}>ВХОД В СИСТЕМУ</h2>
 
                     {errorMessage && (
-                        <div
-                            style={{
-                                color: "red",
-                                marginBottom: "10px",
-                                textAlign: "center",
-                                padding: "10px",
-                                backgroundColor: "rgba(255, 0, 0, 0.1)",
-                                borderRadius: "4px",
-                            }}
-                        >
-                            {errorMessage}
-                        </div>
+                        <div className={style.errorMessage}>{errorMessage}</div>
                     )}
 
                     <div className={style.Block}>
@@ -123,7 +120,7 @@ export default function Login() {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            onKeyPress={(e) =>
+                            onKeyDown={(e) =>
                                 e.key === "Enter" && !isLoading && handleLogin()
                             }
                             disabled={isLoading}

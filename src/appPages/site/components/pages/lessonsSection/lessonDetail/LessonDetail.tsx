@@ -4,11 +4,11 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import video from "@/assets/Icons/videoIcon.png";
 import style from "./lessonDetail.module.scss";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 interface CourseItem {
     id: number;
-    course_image: any;
+    course_image: StaticImageData;
     course_name: string;
     description: string;
     created_at: string;

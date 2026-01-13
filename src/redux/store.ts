@@ -1,21 +1,44 @@
 // src/redux/store.ts
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, Middleware, MiddlewareAPI } from "@reduxjs/toolkit";
 import { api } from "./api";
 import userReducer from "./slices/userSlice";
 
+// Создаём функцию для создания store (нужно определить раньше для типов)
+export const makeStore = () => {
+    return configureStore({
+        reducer: {
+            [api.reducerPath]: api.reducer,
+            user: userReducer,
+        },
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware().concat(api.middleware),
+    });
+};
+
+// Экспортируем типы
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];
+
 // Middleware для сохранения состояния пользователя в localStorage
-const localStorageMiddleware = (store: any) => (next: any) => (action: any) => {
+const localStorageMiddleware: Middleware<{}, RootState> = 
+    (store: MiddlewareAPI<AppDispatch, RootState>) => 
+    (next) => 
+    (action) => {
     const result = next(action);
     
     // Сохраняем состояние пользователя после каждого изменения
-    if (action.type?.startsWith('user/')) {
-        const userState = store.getState().user;
-        if (typeof window !== 'undefined') {
-            try {
-                localStorage.setItem('userState', JSON.stringify(userState));
-                console.log('💾 [STORE] User state saved to localStorage:', userState);
-            } catch (error) {
-                console.error('❌ [STORE] Failed to save to localStorage:', error);
+    if (typeof action === 'object' && action !== null && 'type' in action) {
+        const typedAction = action as { type: string };
+        if (typedAction.type?.startsWith('user/')) {
+            const userState = store.getState().user;
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('userState', JSON.stringify(userState));
+                    console.log('💾 [STORE] User state saved to localStorage:', userState);
+                } catch (error) {
+                    console.error('❌ [STORE] Failed to save to localStorage:', error);
+                }
             }
         }
     }
@@ -40,8 +63,8 @@ const loadUserState = () => {
     return undefined;
 };
 
-// Создаём функцию для создания store
-export const makeStore = () => {
+// Обновляем функцию для создания store с middleware и preloadedState
+export const makeStoreWithMiddleware = () => {
     const preloadedUserState = loadUserState();
     
     return configureStore({
@@ -54,8 +77,3 @@ export const makeStore = () => {
             getDefaultMiddleware().concat(api.middleware, localStorageMiddleware),
     });
 };
-
-// Экспортируем типы
-export type AppStore = ReturnType<typeof makeStore>;
-export type RootState = ReturnType<AppStore["getState"]>;
-export type AppDispatch = AppStore["dispatch"];

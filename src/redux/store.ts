@@ -3,14 +3,19 @@ import { configureStore } from "@reduxjs/toolkit";
 import { api } from "./api";
 import userReducer from "./slices/userSlice";
 
-export const store = configureStore({
-    reducer: {
-        [api.reducerPath]: api.reducer,
-        user: userReducer,
-    },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(api.middleware),
-});
+// Создаём функцию для создания store
+export const makeStore = () => {
+    return configureStore({
+        reducer: {
+            [api.reducerPath]: api.reducer,
+            user: userReducer,
+        },
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware().concat(api.middleware),
+    });
+};
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+// Экспортируем типы
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];

@@ -3,9 +3,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useGetMeQuery } from "@/redux/api/auth";
-import { useAppDispatch } from "@/redux/hooks";
-import { setUser } from "@/redux/slices/userSlice";
+import { useValidateTokenQuery } from "@/redux/api/auth";
+import { useAppSelector } from "@/redux/hooks";
 import Cookies from "js-cookie";
 import style from "./ProtectedRoute.module.scss";
 
@@ -15,60 +14,54 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     const router = useRouter();
-    const dispatch = useAppDispatch();
+
+    // Получаем пользователя из Redux
+    const userFromRedux = useAppSelector((state) => state.user);
 
     // Проверяем наличие токена
-    const hasToken =
-        Cookies.get("access_token") || Cookies.get("refresh_token");
+    const hasToken = !!Cookies.get("access_token");
 
-    // Делаем запрос только если есть токен
-    const {
-        data: user,
-        isLoading,
-        error,
-    } = useGetMeQuery(undefined, {
-        skip: !hasToken, // Пропускаем запрос если нет токенов
+    // Используем validateToken для проверки валидности токена
+    const { isLoading, error, isSuccess } = useValidateTokenQuery(undefined, {
+        skip: !hasToken,
     });
 
     useEffect(() => {
-        // Если нет токенов - сразу редиректим
+        // Если нет токена - сразу редиректим
         if (!hasToken) {
+            console.log("❌ No token found, redirecting to /login");
             router.replace("/login");
             return;
         }
 
-        // Если загрузка завершена и есть ошибка или нет пользователя - редиректим
-        if (!isLoading && (error || !user)) {
-            console.error("❌ Ошибка получения профиля:", error);
-            Cookies.remove("access_token");
-            Cookies.remove("refresh_token");
+        // Если загрузка завершена и токен невалиден
+        if (!isLoading && error) {
+            console.error("❌ Token validation failed:", error);
+            Cookies.remove("access_token", { path: "/" });
+            Cookies.remove("refresh_token", { path: "/" });
             router.replace("/login");
             return;
         }
 
-        // Если пользователь загружен - сохраняем в Redux
-        if (user) {
-            console.log("✅ Профиль загружен:", user);
-            dispatch(
-                setUser({
-                    username: user.username,
-                    email: user.email,
-                })
-            );
+        // Если токен валиден - логируем успех
+        if (isSuccess && !isLoading) {
+            console.log("✅ Token valid, user can proceed");
+            if (userFromRedux?.username) {
+                console.log("✅ User data in Redux:", userFromRedux.username);
+            }
         }
-    }, [user, isLoading, error, router, hasToken, dispatch]);
+    }, [hasToken, isLoading, error, isSuccess, userFromRedux, router]);
 
     // Показываем loader пока идет проверка
     if (!hasToken || isLoading) {
         return <div className={style.loading}>Загрузка...</div>;
     }
 
-    // ВРЕМЕННО: если есть токены - пропускаем
-    // (закомментировано пока не найдем правильный путь к API)
-    if (!user) {
-        return null;
+    // Если токен невалиден - показываем loader
+    if (error) {
+        return <div className={style.loading}>Перенаправление...</div>;
     }
 
-    // Пользователь авторизован - показываем контент
+    // Токен валиден - показываем контент
     return <>{children}</>;
 }

@@ -4,65 +4,17 @@ import type { ILoginRequest, ILoginResponse } from "./types";
 import { setUser, clearUser } from "../../slices/userSlice";
 import Cookies from "js-cookie";
 
-// Типы для ответа от /student-profile/
-interface StudentProfileArrayResponse {
-    username?: string;
-    email?: string;
-    user?: {
-        username?: string;
-        email?: string;
-    };
-}
-
-interface StudentProfileResponse {
-    username?: string;
-    email?: string;
-    user?: {
-        username?: string;
-        email?: string;
-    };
-}
-
 export const authApi = api.injectEndpoints({
     endpoints: (build) => ({
-        // Получение текущего пользователя
-        getMe: build.query<{ username: string; email: string | null }, void>({
+        // Простая проверка валидности токена
+        validateToken: build.query<{ valid: boolean }, void>({
             query: () => ({
                 url: "/student-profile/",
                 method: "GET",
             }),
             providesTags: ["User"],
-            transformResponse: (
-                response: StudentProfileResponse | StudentProfileArrayResponse[]
-            ) => {
-                console.log("📥 Ответ от /student-profile/:", response);
-
-                // Если ответ - массив, берем первый элемент
-                if (Array.isArray(response) && response.length > 0) {
-                    return {
-                        username:
-                            response[0].username ||
-                            response[0].user?.username ||
-                            "",
-                        email:
-                            response[0].email ||
-                            response[0].user?.email ||
-                            null,
-                    };
-                }
-
-                // Если объект
-                const singleResponse = response as StudentProfileResponse;
-                return {
-                    username:
-                        singleResponse.username ||
-                        singleResponse.user?.username ||
-                        "",
-                    email:
-                        singleResponse.email ||
-                        singleResponse.user?.email ||
-                        null,
-                };
+            transformResponse: () => {
+                return { valid: true };
             },
         }),
 
@@ -75,56 +27,54 @@ export const authApi = api.injectEndpoints({
             }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
-                    console.log("🔄 Начало процесса логина...");
+                    console.log("🔄 [AUTH_API] Начало процесса логина...");
+
                     const { data } = await queryFulfilled;
-                    console.log("✅ Данные от сервера получены:", data);
+                    console.log(
+                        "✅ [AUTH_API] Данные от сервера получены:",
+                        data
+                    );
 
                     // Сохраняем токены в cookies
                     if (data.access && data.refresh) {
-                        console.log("💾 Сохраняем токены...");
+                        console.log(
+                            "💾 [AUTH_API] Сохраняем токены в cookies..."
+                        );
 
-                        // Access token - короткий срок (1 час)
+                        Cookies.remove("access_token");
+                        Cookies.remove("refresh_token");
+
                         Cookies.set("access_token", data.access, {
-                            expires: 1 / 24, // 1 час
+                            expires: 1 / 24,
                             path: "/",
+                            sameSite: "lax",
                         });
 
-                        // Refresh token - длинный срок (7 дней)
                         Cookies.set("refresh_token", data.refresh, {
-                            expires: 7, // 7 дней
+                            expires: 7,
                             path: "/",
+                            sameSite: "lax",
                         });
 
-                        console.log("✅ Токены сохранены в cookies");
-                        console.log(
-                            "🔑 Access token:",
-                            Cookies.get("access_token")?.substring(0, 20) +
-                                "..."
-                        );
-                        console.log(
-                            "🔑 Refresh token:",
-                            Cookies.get("refresh_token")?.substring(0, 20) +
-                                "..."
-                        );
-                    } else {
-                        console.log("❌ Токены не найдены в ответе!");
+                        console.log("✅ [AUTH_API] Токены сохранены");
                     }
 
                     // Сохраняем пользователя в Redux
+                    console.log(
+                        "💾 [AUTH_API] Вызываем setUser для:",
+                        data.user
+                    );
                     dispatch(
                         setUser({
                             username: data.user.username,
                             email: data.user.email,
                         })
                     );
-                    console.log("✅ Пользователь сохранен в Redux:", data.user);
                 } catch (error) {
-                    // Ошибки обрабатываются в компоненте
-                    console.log(
-                        "⚠️ Ошибка при логине (обрабатывается в компоненте)"
-                    );
+                    console.log("❌ [AUTH_API] Ошибка при логине:", error);
                 }
             },
+            invalidatesTags: ["User"],
         }),
 
         // Обновление токена
@@ -146,17 +96,19 @@ export const authApi = api.injectEndpoints({
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
                     await queryFulfilled;
-                    console.log("✅ Logout успешен");
+                    console.log("✅ [AUTH_API] Logout успешен");
                 } catch (error) {
-                    console.log(
-                        "⚠️ Logout request failed, but clearing local data anyway"
-                    );
+                    console.log("⚠️ [AUTH_API] Logout failed");
                 } finally {
-                    // Очищаем Redux и cookies в любом случае
+                    console.log("🧹 [AUTH_API] Очистка данных...");
+
                     dispatch(clearUser());
-                    Cookies.remove("access_token");
-                    Cookies.remove("refresh_token");
-                    Cookies.remove("user");
+                    dispatch(api.util.resetApiState());
+
+                    Cookies.remove("access_token", { path: "/" });
+                    Cookies.remove("refresh_token", { path: "/" });
+
+                    console.log("✅ [AUTH_API] Данные очищены");
                 }
             },
         }),
@@ -164,7 +116,7 @@ export const authApi = api.injectEndpoints({
 });
 
 export const {
-    useGetMeQuery,
+    useValidateTokenQuery,
     useLoginMutation,
     useRefreshTokenMutation,
     useLogoutMutation,

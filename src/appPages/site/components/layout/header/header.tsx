@@ -7,8 +7,9 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ProfileIcon from "@/assets/Icons/profile.jpg";
 import Logo from "@/assets/Icons/Logo.svg";
-import { useLogoutMutation, useGetMeQuery } from "@/redux/api/auth";
+import { useLogoutMutation, useValidateTokenQuery } from "@/redux/api/auth";
 import { useAppSelector } from "@/redux/hooks";
+import Cookies from "js-cookie";
 
 const Links = [
     {
@@ -30,14 +31,18 @@ const Header: React.FC = () => {
     // Получаем пользователя из Redux
     const userFromRedux = useAppSelector((state) => state.user);
 
-    // Загружаем данные пользователя с сервера, если их нет в Redux
-    const { data: userFromServer, isLoading } = useGetMeQuery(undefined, {
-        skip: !!userFromRedux, // Пропускаем запрос, если данные уже есть в Redux
+    // Проверяем наличие токена
+    const hasToken =
+        typeof window !== "undefined" && !!Cookies.get("access_token");
+
+    // Используем validateToken для проверки валидности токена
+    const { isLoading, isError } = useValidateTokenQuery(undefined, {
+        skip: !hasToken,
     });
 
-    // Используем данные из Redux или с сервера
-    const user = userFromRedux || userFromServer;
-    const isAuthenticated = !!user;
+    // Главное: используем данные из Redux
+    const currentUser = userFromRedux;
+    const isAuthenticated = hasToken && !!currentUser?.username && !isError;
 
     const handleProfileClick = (): void => {
         if (isAuthenticated) {
@@ -51,10 +56,12 @@ const Header: React.FC = () => {
         try {
             await logout().unwrap();
         } catch (error) {
-            console.log("Logout request failed");
+            console.log("⚠️ Logout failed:", error);
         } finally {
             setShowProfileMenu(false);
-            router.push("/login");
+            setTimeout(() => {
+                router.push("/login");
+            }, 100);
         }
     };
 
@@ -100,31 +107,41 @@ const Header: React.FC = () => {
                                     src={ProfileIcon}
                                     alt="profile"
                                 />
-                                {isAuthenticated && user && !isLoading && (
+                                {isAuthenticated &&
+                                    currentUser &&
+                                    !isLoading && (
+                                        <span className={style.username}>
+                                            {currentUser.username}
+                                        </span>
+                                    )}
+                                {!isAuthenticated && !isLoading && (
                                     <span className={style.username}>
-                                        {user.username}
+                                        Войти
                                     </span>
                                 )}
                             </button>
 
-                            {isAuthenticated && showProfileMenu && user && (
-                                <div className={style.profileMenu}>
-                                    <div className={style.profileInfo}>
-                                        <p className={style.profileName}>
-                                            {user.username}
-                                        </p>
-                                        <p className={style.profileEmail}>
-                                            {user.email}
-                                        </p>
+                            {isAuthenticated &&
+                                showProfileMenu &&
+                                currentUser && (
+                                    <div className={style.profileMenu}>
+                                        <div className={style.profileInfo}>
+                                            <p className={style.profileName}>
+                                                {currentUser.username}
+                                            </p>
+                                            <p className={style.profileEmail}>
+                                                {currentUser.email ||
+                                                    "Email не указан"}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={handleLogout}
+                                            className={style.logoutButton}
+                                        >
+                                            Выйти
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={handleLogout}
-                                        className={style.logoutButton}
-                                    >
-                                        Выйти
-                                    </button>
-                                </div>
-                            )}
+                                )}
                         </div>
 
                         <button

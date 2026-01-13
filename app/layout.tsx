@@ -1,9 +1,12 @@
-"use client";
-
+// src/app/layout.tsx
 import "./global.scss";
-import LayoutClient from "./components/LayoutClient";
-import { Provider } from "react-redux";
-import { store } from "../src/redux/store";
+import StoreProvider from "@/redux/storeProvider";
+
+export const metadata = {
+    title: "MOTION WEB ACADEMY",
+    description:
+        "Изучайте Python, Django, JavaScript и React с Motion Web Academy. Структурированные видеоуроки, групповые чаты и персональная поддержка.",
+};
 
 export default function RootLayout({
     children,
@@ -13,11 +16,6 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
-                <title>MOTION WEB ACADEMY</title>
-                <meta
-                    name="description"
-                    content="Изучайте Python, Django, JavaScript и React с Motion Web Academy. Структурированные видеоуроки, групповые чаты и персональная поддержка."
-                />
                 <link
                     rel="icon"
                     type="image/svg"
@@ -25,11 +23,8 @@ export default function RootLayout({
                     href="/Logo.svg"
                 />
             </head>
-
             <body>
-                <Provider store={store}>
-                    <LayoutClient>{children}</LayoutClient>
-                </Provider>
+                <StoreProvider>{children}</StoreProvider>
             </body>
         </html>
     );

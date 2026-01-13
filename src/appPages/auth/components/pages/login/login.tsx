@@ -1,29 +1,77 @@
 // src/appPages/auth/components/pages/login/login.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/redux/api/auth";
+import { useAppSelector } from "@/redux/hooks";
+import Cookies from "js-cookie";
 import style from "./login.module.scss";
 
 export default function Login() {
     const router = useRouter();
     const [login, { isLoading }] = useLoginMutation();
 
+    const userFromRedux = useAppSelector((state) => state.user);
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+
+    // Проверяем авторизацию при загрузке
+    useEffect(() => {
+        const hasToken = !!Cookies.get("access_token");
+
+        // Если пользователь уже залогинен - редиректим на /home
+        if (hasToken && userFromRedux?.username) {
+            console.log(
+                "✅ [LOGIN] User already logged in, redirecting to /home"
+            );
+            router.replace("/home");
+        }
+    }, [router, userFromRedux]);
 
     const handleLogin = async () => {
         if (!username || !password) {
+            setErrorMessage("Введите логин и пароль");
             return;
         }
 
+        setErrorMessage(""); // Очищаем предыдущие ошибки
+
         try {
-            await login({ username, password }).unwrap();
+            console.log("🔐 [LOGIN] Попытка входа для:", username);
+
+            const result = await login({ username, password }).unwrap();
+
+            console.log("✅ [LOGIN] Успешный вход!");
+            console.log("   User:", result.user.username);
+
+            // Проверяем что токены сохранились
+            const hasToken = !!Cookies.get("access_token");
+            console.log("🔑 [LOGIN] Токен сохранён:", hasToken);
+
+            if (!hasToken) {
+                console.error("❌ [LOGIN] ОШИБКА: Токен не сохранился!");
+                setErrorMessage("Ошибка сохранения токена");
+                return;
+            }
+
+            console.log("➡️ [LOGIN] Редирект на /home");
             router.push("/home");
-        } catch (err) {
-            // Ничего не делаем при ошибке - просто игнорируем
-            // Пользователь останется на странице логина
+        } catch (err: any) {
+            console.error("❌ [LOGIN] Ошибка входа:", err);
+
+            // Обработка различных типов ошибок
+            if (err.status === 401) {
+                setErrorMessage("Неверный логин или пароль");
+            } else if (err.status === 400) {
+                setErrorMessage("Проверьте введенные данные");
+            } else if (err.originalStatus === 400) {
+                setErrorMessage("Неверный логин или пароль");
+            } else {
+                setErrorMessage("Ошибка подключения к серверу");
+            }
         }
     };
 
@@ -32,6 +80,21 @@ export default function Login() {
             <div className={style.content}>
                 <div className={style.form}>
                     <h2 className={style.title}>ВХОД В СИСТЕМУ</h2>
+
+                    {errorMessage && (
+                        <div
+                            style={{
+                                color: "red",
+                                marginBottom: "10px",
+                                textAlign: "center",
+                                padding: "10px",
+                                backgroundColor: "rgba(255, 0, 0, 0.1)",
+                                borderRadius: "4px",
+                            }}
+                        >
+                            {errorMessage}
+                        </div>
+                    )}
 
                     <div className={style.Block}>
                         <h2 className={style.Text}>ЛОГИН</h2>
@@ -54,7 +117,7 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             onKeyPress={(e) =>
-                                e.key === "Enter" && handleLogin()
+                                e.key === "Enter" && !isLoading && handleLogin()
                             }
                             disabled={isLoading}
                         />

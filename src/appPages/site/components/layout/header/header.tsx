@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ProfileIcon from "@/assets/Icons/profile.jpg";
 import Logo from "@/assets/Icons/Logo.svg";
-import { useLogoutMutation, useValidateTokenQuery } from "@/redux/api/auth";
+import { useLogoutMutation } from "@/redux/api/auth";
 import { useAppSelector } from "@/redux/hooks";
 import Cookies from "js-cookie";
 
@@ -28,21 +28,22 @@ const Header: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
 
-    // Получаем пользователя из Redux
-    const userFromRedux = useAppSelector((state) => state.user);
+    // Получаем пользователя из Redux (данные уже загружены через AuthInitializer)
+    const currentUser = useAppSelector((state) => state.user);
 
     // Проверяем наличие токена
     const hasToken =
         typeof window !== "undefined" && !!Cookies.get("access_token");
 
-    // Используем validateToken для проверки валидности токена
-    const { isLoading, isError } = useValidateTokenQuery(undefined, {
-        skip: !hasToken,
-    });
+    // Пользователь аутентифицирован, если есть токен и имя пользователя в Redux
+    const isAuthenticated = hasToken && !!currentUser?.username;
 
-    // Главное: используем данные из Redux
-    const currentUser = userFromRedux;
-    const isAuthenticated = hasToken && !!currentUser?.username && !isError;
+    // Логирование для отладки
+    console.log("🔍 [HEADER] Debug info:", {
+        hasToken,
+        currentUser,
+        isAuthenticated,
+    });
 
     const handleProfileClick = (): void => {
         if (isAuthenticated) {
@@ -107,14 +108,12 @@ const Header: React.FC = () => {
                                     src={ProfileIcon}
                                     alt="profile"
                                 />
-                                {isAuthenticated &&
-                                    currentUser &&
-                                    !isLoading && (
-                                        <span className={style.username}>
-                                            {currentUser.username}
-                                        </span>
-                                    )}
-                                {!isAuthenticated && !isLoading && (
+                                {isAuthenticated && currentUser && (
+                                    <span className={style.username}>
+                                        {currentUser.username}
+                                    </span>
+                                )}
+                                {!isAuthenticated && (
                                     <span className={style.username}>
                                         Войти
                                     </span>

@@ -32,8 +32,14 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
     let result = await baseQuery(args, api, extraOptions);
 
-    // Если получили 401 ошибку - пробуем обновить токен
-    if (result.error && result.error.status === 401) {
+    // Получаем URL запроса
+    const url = typeof args === "string" ? args : args.url;
+
+    // Проверяем, это НЕ запрос логина
+    const isLoginRequest = url.includes("/login");
+
+    // Если получили 401 ошибку И это НЕ логин - пробуем обновить токен
+    if (result.error && result.error.status === 401 && !isLoginRequest) {
         const refreshToken = Cookies.get("refresh_token");
 
         if (refreshToken) {
@@ -83,6 +89,6 @@ const baseQueryWithReauth: BaseQueryFn<
 export const api = createApi({
     reducerPath: "api",
     baseQuery: baseQueryWithReauth,
-    tagTypes: ["User", "Lessons"],
+    tagTypes: ["User", "lessons"],
     endpoints: () => ({}),
 });

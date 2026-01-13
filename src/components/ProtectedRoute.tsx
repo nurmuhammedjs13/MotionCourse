@@ -24,6 +24,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     // Используем validateToken для проверки валидности токена
     const { isLoading, error, isSuccess } = useValidateTokenQuery(undefined, {
         skip: !hasToken,
+        refetchOnMountOrArgChange: true, // Перезагружаем данные при каждом монтировании
     });
 
     useEffect(() => {

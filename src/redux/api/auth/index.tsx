@@ -7,14 +7,70 @@ import Cookies from "js-cookie";
 export const authApi = api.injectEndpoints({
     endpoints: (build) => ({
         // Простая проверка валидности токена
-        validateToken: build.query<{ valid: boolean }, void>({
+        validateToken: build.query<
+            { valid: boolean; user?: { username: string; email: string } },
+            void
+        >({
             query: () => ({
                 url: "/student-profile/",
                 method: "GET",
             }),
+            keepUnusedDataFor: 300, // Кешируем на 5 минут
             providesTags: ["User"],
-            transformResponse: () => {
-                return { valid: true };
+            transformResponse: (response: any) => {
+                console.log("✅ [VALIDATE_TOKEN] Ответ от сервера:", response);
+                console.log(
+                    "✅ [VALIDATE_TOKEN] Тип ответа:",
+                    Array.isArray(response) ? "массив" : "объект"
+                );
+
+                // Если ответ - массив, берём первый элемент
+                const userData = Array.isArray(response)
+                    ? response[0]
+                    : response;
+
+                console.log(
+                    "✅ [VALIDATE_TOKEN] Данные пользователя:",
+                    userData
+                );
+
+                return {
+                    valid: true,
+                    user: {
+                        username:
+                            userData?.username ||
+                            userData?.user?.username ||
+                            "",
+                        email: userData?.email || userData?.user?.email || "",
+                    },
+                };
+            },
+            async onQueryStarted(_, { queryFulfilled, dispatch }) {
+                try {
+                    const { data } = await queryFulfilled;
+
+                    // Автоматически восстанавливаем пользователя в Redux
+                    if (data.user && data.user.username) {
+                        console.log(
+                            "💾 [VALIDATE_TOKEN] Восстанавливаем пользователя:",
+                            data.user
+                        );
+                        dispatch(
+                            setUser({
+                                username: data.user.username,
+                                email: data.user.email,
+                            })
+                        );
+                    } else {
+                        console.log(
+                            "⚠️ [VALIDATE_TOKEN] Нет данных пользователя для восстановления"
+                        );
+                    }
+                } catch (error) {
+                    console.log("❌ [VALIDATE_TOKEN] Ошибка валидации:", error);
+                    // При ошибке очищаем данные
+                    dispatch(clearUser());
+                }
             },
         }),
 
@@ -107,6 +163,12 @@ export const authApi = api.injectEndpoints({
 
                     Cookies.remove("access_token", { path: "/" });
                     Cookies.remove("refresh_token", { path: "/" });
+                    
+                    // Очищаем localStorage
+                    if (typeof window !== 'undefined') {
+                        localStorage.removeItem('userState');
+                        console.log("🧹 [AUTH_API] localStorage очищен");
+                    }
 
                     console.log("✅ [AUTH_API] Данные очищены");
                 }

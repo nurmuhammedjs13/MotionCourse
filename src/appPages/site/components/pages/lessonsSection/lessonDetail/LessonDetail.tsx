@@ -6,7 +6,15 @@ import video from "@/assets/Icons/videoIcon.png";
 import style from "./lessonDetail.module.scss";
 import Image from "next/image";
 
-const cardData = [
+interface CourseItem {
+    id: number;
+    course_image: any;
+    course_name: string;
+    description: string;
+    created_at: string;
+}
+
+const cardData: CourseItem[] = [
     {
         id: 0,
         course_image: video,
@@ -75,7 +83,7 @@ function LessonDetail() {
         return matchesName && matchesDate;
     });
 
-    const handleBookClick = (item): void => {
+    const handleBookClick = (item: CourseItem): void => {
         router.push(`/lessons/${item.id}`);
     };
 

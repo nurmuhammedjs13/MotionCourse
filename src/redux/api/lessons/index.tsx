@@ -9,7 +9,7 @@ const api = index.injectEndpoints({
                 url: `course`,
                 method: "GET",
             }),
-            providesTags: ["course"],
+            providesTags: ["lessons"],
         }),
         getLessonDetail: build.query<
             LESSONS.GetLessonDetailResponce,

@@ -60,17 +60,24 @@ export default function Login() {
             console.log("➡️ [LOGIN] Редирект на /home");
             router.push("/home");
         } catch (err: any) {
-            console.error("❌ [LOGIN] Ошибка входа:", err);
+            // RTK Query возвращает ошибку в формате { status, data }
+            const status = err?.status;
+            const errorData = err?.data;
 
-            // Обработка различных типов ошибок
-            if (err.status === 401) {
+            console.log("❌ [LOGIN] Ошибка:", { status, errorData });
+
+            // Приоритет: сообщение от сервера -> статус -> общая ошибка
+            if (errorData?.detail) {
+                // Используем сообщение от сервера (например, "Неверные учетные данные")
+                setErrorMessage(errorData.detail);
+            } else if (status === 401 || status === 400) {
                 setErrorMessage("Неверный логин или пароль");
-            } else if (err.status === 400) {
-                setErrorMessage("Проверьте введенные данные");
-            } else if (err.originalStatus === 400) {
-                setErrorMessage("Неверный логин или пароль");
-            } else {
+            } else if (status === 500) {
+                setErrorMessage("Ошибка сервера. Попробуйте позже");
+            } else if (status === "FETCH_ERROR") {
                 setErrorMessage("Ошибка подключения к серверу");
+            } else {
+                setErrorMessage("Произошла ошибка. Попробуйте снова");
             }
         }
     };

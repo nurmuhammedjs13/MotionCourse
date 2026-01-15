@@ -1,0 +1,171 @@
+.UploadedVideos {
+    padding: 45px 0;
+    background: black;
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        .title {
+            font-size: 30px;
+            color: red;
+            font-weight: 600;
+        }
+        .filterBlock {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+
+            .Name,
+            .categories,
+            .data {
+                padding: 10px;
+                font-size: 25px;
+                color: white;
+                background: black;
+                border: 2px solid white;
+                box-shadow: 5px 5px 0 rgb(255, 0, 0);
+                transition: all 0.3s ease-in-out;
+
+                &:focus {
+                    outline: none;
+                    box-shadow: 8px 8px 0 rgb(255, 0, 0);
+                }
+            }
+
+            .categories {
+                cursor: pointer;
+
+                option {
+                    background: black;
+                    color: white;
+                }
+            }
+        }
+
+        .videoBlock {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            .empty {
+                color: white;
+                font-size: 24px;
+                text-align: center;
+                padding: 40px;
+            }
+
+            .card {
+                border: 2px solid white;
+                box-shadow: 8px 8px 0 rgb(255, 0, 0);
+                padding: 20px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                transition: all 0.3s ease-in-out;
+
+                .content {
+                    display: flex;
+                    gap: 20px;
+                    flex-direction: row;
+                    flex: 1;
+
+                    .imageWrapper {
+                        position: relative;
+                        width: 320px;
+                        height: 220px;
+                        padding: 10px;
+                        border: 2px solid white;
+                        flex-shrink: 0;
+
+                        .videoIcon {
+                            object-fit: cover;
+                        }
+                    }
+                    .cardInfo {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                        justify-content: center;
+
+                        .lessonName {
+                            color: white;
+                            font-size: 20px;
+                            font-weight: 600;
+                        }
+                        .lessonDesc {
+                            color: gray;
+                            font-size: 16px;
+                        }
+                        .infoLastBlock {
+                            display: flex;
+                            flex-direction: row;
+                            gap: 50px;
+                            margin-top: auto;
+
+                            .lessonTheme {
+                                color: gray;
+                                font-size: 14px;
+                            }
+                            .lessonData {
+                                color: gray;
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+
+                .buttons {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                    flex-shrink: 0;
+
+                    button {
+                        padding: 12px 24px;
+                        font-size: 18px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease-in-out;
+                        border: 2px solid white;
+                        min-width: 180px;
+                    }
+
+                    .edit {
+                        color: white;
+                        background: black;
+                        box-shadow: 5px 5px 0 rgb(255, 0, 0);
+
+                        &:hover {
+                            box-shadow: 8px 8px 0 rgb(255, 0, 0);
+                            transform: translate(-2px, -2px);
+                        }
+
+                        &:active {
+                            box-shadow: 3px 3px 0 rgb(255, 0, 0);
+                            transform: translate(2px, 2px);
+                        }
+                    }
+
+                    .delete {
+                        color: white;
+                        background: rgb(255, 0, 0);
+                        box-shadow: 5px 5px 0 rgb(139, 0, 0);
+
+                        &:hover {
+                            background: rgb(220, 0, 0);
+                            box-shadow: 8px 8px 0 rgb(139, 0, 0);
+                            transform: translate(-2px, -2px);
+                        }
+
+                        &:active {
+                            box-shadow: 3px 3px 0 rgb(139, 0, 0);
+                            transform: translate(2px, 2px);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

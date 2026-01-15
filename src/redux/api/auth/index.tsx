@@ -160,7 +160,7 @@ export const authApi = api.injectEndpoints({
                 try {
                     await queryFulfilled;
                     console.log("✅ [AUTH_API] Logout успешен");
-                } catch (error) {
+                } catch {
                     console.log("⚠️ [AUTH_API] Logout failed");
                 } finally {
                     console.log("🧹 [AUTH_API] Очистка данных...");

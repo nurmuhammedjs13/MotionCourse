@@ -2,75 +2,26 @@
 
 import React, { useState } from "react";
 import style from "./lessonsTable.module.scss";
-import video from "@/assets/Icons/videoIcon.png";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useGetLessonsQuery } from "@/redux/api/lessons";
 
 interface CourseItem {
     id: number;
-    course_image: StaticImageData;
+    course_image: string;
     course_name: string;
     description: string;
     created_at: string;
 }
-
-const cardData: CourseItem[] = [
-    {
-        id: 0,
-        course_image: video,
-        course_name: "react",
-        description:
-            "React — библиотека для создания динамических интерфейсов на JavaScript с использованием компонентов и виртуального DOM.",
-        created_at: "2026-01-04",
-    },
-    {
-        id: 1,
-        course_image: video,
-        course_name: "vue",
-        description:
-            "Vue — прогрессивный JavaScript-фреймворк для создания пользовательских интерфейсов с плавной реактивностью.",
-        created_at: "2026-01-03",
-    },
-    {
-        id: 2,
-        course_image: video,
-        course_name: "angular",
-        description:
-            "Angular — мощный фреймворк от Google для построения масштабируемых веб-приложений.",
-        created_at: "2026-01-02",
-    },
-    {
-        id: 3,
-        course_image: video,
-        course_name: "nextjs",
-        description:
-            "Next.js — фреймворк поверх React с серверным рендерингом, роутингом и оптимизацией производительности.",
-        created_at: "2026-01-01",
-    },
-    {
-        id: 4,
-        course_image: video,
-        course_name: "nodejs",
-        description:
-            "Node.js — серверная платформа на JavaScript для создания быстрых и масштабируемых backend-приложений.",
-        created_at: "2025-12-30",
-    },
-    {
-        id: 5,
-        course_image: video,
-        course_name: "typescript",
-        description:
-            "TypeScript — надстройка над JavaScript с типизацией, повышающая надёжность и масштабируемость кода.",
-        created_at: "2025-12-28",
-    },
-];
 
 function LessonsTable() {
     const [search, setSearch] = useState("");
     const [date, setDate] = useState("");
     const router = useRouter();
 
-    const filteredData = cardData.filter((item) => {
+    const { data: CourseItem = [] } = useGetLessonsQuery();
+
+    const filteredData = CourseItem.filter((item) => {
         const matchesName = item.course_name
             .toLowerCase()
             .includes(search.toLowerCase());
@@ -117,10 +68,13 @@ function LessonsTable() {
                                     onClick={() => handleBookClick(item)}
                                 >
                                     <Image
+                                        width={300}
+                                        height={200}
                                         src={item.course_image}
                                         alt={item.course_name}
                                         className={style.image}
                                     />
+
                                     <div className={style.cardInfo}>
                                         <h3>{item.course_name}</h3>
                                         <p>{item.description}</p>

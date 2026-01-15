@@ -78,10 +78,11 @@
                 }
 
                 .image {
-                    width: 150px;
-                    height: 150px;
+                    width: 100%;
+                    height: 200px;
                     object-fit: cover;
                     margin-bottom: 15px;
+                    display: block;
                 }
 
                 .cardInfo {

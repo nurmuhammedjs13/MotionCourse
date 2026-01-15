@@ -2,78 +2,48 @@
 
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import video from "@/assets/Icons/videoIcon.png";
 import style from "./lessonDetail.module.scss";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
+import { useGetLessonsQuery } from "@/redux/api/lessons";
+import { useGetVideosDetailQuery } from "@/redux/api/video";
 
 interface CourseItem {
     id: number;
-    course_image: StaticImageData;
+    course_image: string;
     course_name: string;
     description: string;
     created_at: string;
 }
 
-const cardData: CourseItem[] = [
-    {
-        id: 0,
-        course_image: video,
-        course_name: "react",
-        description:
-            "React — библиотека для создания динамических интерфейсов на JavaScript с использованием компонентов и виртуального DOM.",
-        created_at: "2026-01-04",
-    },
-    {
-        id: 1,
-        course_image: video,
-        course_name: "vue",
-        description:
-            "Vue — прогрессивный JavaScript-фреймворк для создания пользовательских интерфейсов с плавной реактивностью.",
-        created_at: "2026-01-03",
-    },
-    {
-        id: 2,
-        course_image: video,
-        course_name: "angular",
-        description:
-            "Angular — мощный фреймворк от Google для построения масштабируемых веб-приложений.",
-        created_at: "2026-01-02",
-    },
-    {
-        id: 3,
-        course_image: video,
-        course_name: "nextjs",
-        description:
-            "Next.js — фреймворк поверх React с серверным рендерингом, роутингом и оптимизацией производительности.",
-        created_at: "2026-01-01",
-    },
-    {
-        id: 4,
-        course_image: video,
-        course_name: "nodejs",
-        description:
-            "Node.js — серверная платформа на JavaScript для создания быстрых и масштабируемых backend-приложений.",
-        created_at: "2025-12-30",
-    },
-    {
-        id: 5,
-        course_image: video,
-        course_name: "typescript",
-        description:
-            "TypeScript — надстройка над JavaScript с типизацией, повышающая надёжность и масштабируемость кода.",
-        created_at: "2025-12-28",
-    },
-];
+export interface CourseItemDetail {
+    id: number;
+    course: number;
+    category_lesson: CategoryLesson;
+    video: string;
+    lesson_number: number;
+    description: string;
+}
+
+export interface CategoryLesson {
+    id: number;
+    ct_lesson_name: string;
+}
 
 function LessonDetail() {
     const router = useRouter();
-
-    const [search, setSearch] = useState("");
-    const [date, setDate] = useState("");
+    const { data: CourseItem = [] } = useGetLessonsQuery();
     const { id } = useParams();
-    const course = cardData.find((item) => item.id === Number(id));
 
-    const filteredData = cardData.filter((item) => {
+    const { data: CourseItemDetail } = useGetVideosDetailQuery(Number(id), {
+        skip: !id,
+    });
+
+    const [search] = useState("");
+    const [date] = useState("");
+    const course = CourseItem.find((item) => item.id === Number(id));
+    const courseDetail = CourseItemDetail;
+
+    const filteredData = CourseItem.filter((item) => {
         const matchesName = item.course_name
             .toLowerCase()
             .includes(search.toLowerCase());
@@ -95,17 +65,37 @@ function LessonDetail() {
             <div className="container">
                 <div className={style.content}>
                     <div className={style.detailContent}>
-                        <Image
-                            className={style.lessonVideo}
-                            src={course.course_image}
-                            alt="video lesson"
-                        />
+                        {courseDetail?.video && (
+                            <video
+                                className={style.lessonVideo}
+                                src={courseDetail.video}
+                                controls
+                                autoPlay={false}
+                                loop={false}
+                            >
+                                Ваш браузер не поддерживает видео тег.
+                            </video>
+                        )}
                         <div className={style.lessonInfo}>
                             <h2 className={style.title}>
-                                {course.course_name}
+                                {courseDetail?.category_lesson.ct_lesson_name}
                             </h2>
                             <div className={style.hr}></div>
 
+                            <div className={style.themeBlock}>
+                                <h2 className={style.themeTitle}>Подтема:</h2>
+                                <h2 className={style.theme}>
+                                    {course?.course_name}
+                                </h2>
+                            </div>
+                            <div className={style.numberBlock}>
+                                <h2 className={style.numberTitle}>
+                                    Урок по счету:
+                                </h2>
+                                <h2 className={style.number}>
+                                    {courseDetail?.course}
+                                </h2>
+                            </div>
                             <div className={style.dataBlock}>
                                 <h2 className={style.dataTitle}>Дата:</h2>
                                 <h2 className={style.data}>
@@ -132,6 +122,8 @@ function LessonDetail() {
                                         onClick={() => handleBookClick(item)}
                                     >
                                         <Image
+                                            width={300}
+                                            height={200}
                                             src={item.course_image}
                                             alt={item.course_name}
                                             className={style.image}

@@ -21,6 +21,7 @@ export type RootState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];
 
 // Middleware для сохранения состояния пользователя в localStorage
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 const localStorageMiddleware: Middleware<{}, RootState> = 
     (store: MiddlewareAPI<AppDispatch, RootState>) => 
     (next) => 

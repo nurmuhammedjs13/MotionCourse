@@ -14,10 +14,13 @@
 
             .lessonVideo {
                 flex: 2;
-                transition: all 0.3s ease-in-out;
+                height: 420px;
                 padding: 20px;
                 border: 3px solid white;
                 box-shadow: 5px 5px 0 rgb(255, 0, 0);
+                object-fit: cover;
+                display: block;
+                transition: all 0.3s ease-in-out;
 
                 &:hover {
                     border: none;
@@ -25,9 +28,10 @@
                 }
 
                 video,
-                img {
+                .img {
                     width: 100%;
-                    height: auto;
+                    height: 100%;
+                    object-fit: cover;
                     display: block;
                 }
             }
@@ -56,6 +60,45 @@
                     }
 
                     .data {
+                        color: white;
+                        font-size: 14px;
+                    }
+                }
+
+                .hr {
+                    height: 1px;
+                    border-radius: 10px;
+                    background: white;
+                }
+                .themeBlock {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .themeTitle {
+                        color: gray;
+                        font-size: 14px;
+                    }
+
+                    .theme {
+                        color: white;
+                        font-size: 14px;
+                    }
+                }
+                .hr {
+                    height: 1px;
+                    border-radius: 10px;
+                    background: white;
+                }
+                .numberBlock {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .numberTitle {
+                        color: gray;
+                        font-size: 14px;
+                    }
+
+                    .number {
                         color: white;
                         font-size: 14px;
                     }
@@ -119,10 +162,10 @@
 
                     .image {
                         width: 100%;
-                        max-width: 200px;
-                        height: auto;
+                        height: 200px;
                         object-fit: cover;
                         margin-bottom: 15px;
+                        display: block;
                     }
 
                     .cardInfo {

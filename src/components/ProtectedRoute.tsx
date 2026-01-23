@@ -3,7 +3,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { clearUser } from "@/redux/slices/userSlice";
 import Cookies from "js-cookie";
 import style from "./ProtectedRoute.module.scss";
 
@@ -13,68 +14,82 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     const router = useRouter();
+    const dispatch = useAppDispatch();
     const [isClient, setIsClient] = useState(false);
+    const [isChecking, setIsChecking] = useState(true);
 
-    // Получаем пользователя из Redux
     const userFromRedux = useAppSelector((state) => state.user);
-
-    // Проверяем наличие токена только на клиенте
     const hasToken = isClient ? !!Cookies.get("access_token") : false;
 
-    // Устанавливаем флаг клиента при монтировании
     useEffect(() => {
         setIsClient(true);
     }, []);
 
-    console.log("🔍 [PROTECTED_ROUTE] State:", {
-        isClient,
-        hasToken,
-        username: userFromRedux?.username,
-        status: userFromRedux?.status,
-        course: userFromRedux?.course,
-        pathname: typeof window !== 'undefined' ? window.location.pathname : 'server',
-    });
-
-    // Пользователь аутентифицирован, если есть токен и данные в Redux
-    const isAuthenticated = hasToken && !!userFromRedux?.username;
-
     useEffect(() => {
-        if (!isClient) return; // Не выполняем логику на сервере
+        if (!isClient) return;
 
-        // Если нет токена - сразу редиректим
-        if (!hasToken) {
-            console.log("❌ No token found, redirecting to /login");
-            router.replace("/login");
-            return;
-        }
+        const checkAuth = async () => {
+            console.log("🔍 [PROTECTED_ROUTE] Checking auth:", {
+                hasToken,
+                username: userFromRedux?.username,
+            });
 
-        // Если есть токен но нет данных в Redux - возможна проблема с localStorage
-        if (hasToken && !userFromRedux?.username) {
-            console.log("⚠️ Token exists but no user data in Redux - possible localStorage issue");
-            // Можно добавить принудительное восстановление или очистку
-        }
+            // Если нет токена - очищаем Redux и редиректим
+            if (!hasToken) {
+                console.log("❌ No token found, clearing state and redirecting");
+                dispatch(clearUser());
+                localStorage.removeItem("user");
+                router.replace("/login");
+                return;
+            }
 
-        // Если все в порядке
-        if (isAuthenticated) {
-            console.log("✅ User authenticated:", userFromRedux.username);
-        }
-    }, [isClient, hasToken, userFromRedux, isAuthenticated, router]);
+            // Если есть токен но нет данных в Redux
+            if (hasToken && !userFromRedux?.username) {
+                console.log("⚠️ Token exists but no user data - checking localStorage");
+                
+                // Проверяем localStorage
+                const storedUser = localStorage.getItem("user");
+                if (!storedUser) {
+                    console.log("❌ No user in localStorage, clearing and redirecting");
+                    Cookies.remove("access_token");
+                    Cookies.remove("refresh_token");
+                    dispatch(clearUser());
+                    router.replace("/login");
+                    return;
+                }
+            }
+
+            // Все в порядке
+            if (hasToken && userFromRedux?.username) {
+                console.log("✅ User authenticated:", userFromRedux.username);
+            }
+
+            setIsChecking(false);
+        };
+
+        checkAuth();
+    }, [isClient, hasToken, userFromRedux, router, dispatch]);
 
     // На сервере всегда показываем загрузку
     if (!isClient) {
         return <div className={style.loading}>Загрузка</div>;
     }
 
-    // Показываем загрузку если нет токена
+    // Показываем загрузку только во время проверки
+    if (isChecking) {
+        return <div className={style.loading}>Загрузка</div>;
+    }
+
+    // Если нет токена - не показываем контент (уже идет редирект)
     if (!hasToken) {
         return <div className={style.loading}>Загрузка</div>;
     }
 
-    // Если есть токен но нет данных - показываем загрузку
-    if (hasToken && !userFromRedux?.username) {
+    // Если нет данных пользователя - не показываем контент (уже идет редирект)
+    if (!userFromRedux?.username) {
         return <div className={style.loading}>Загрузка</div>;
     }
 
-    // Токен есть и данные есть - показываем контент
+    // Все проверки пройдены - показываем контент
     return <>{children}</>;
 }

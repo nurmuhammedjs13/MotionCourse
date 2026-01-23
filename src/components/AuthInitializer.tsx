@@ -2,15 +2,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAppSelector } from "@/redux/hooks";
+import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { clearUser } from "@/redux/slices/userSlice";
 import Cookies from "js-cookie";
 
-/**
- * Компонент для проверки начального состояния аутентификации
- * Данные пользователя уже восстанавливаются из localStorage в store
- */
 export function AuthInitializer() {
     const [isClient, setIsClient] = useState(false);
+    const router = useRouter();
+    const dispatch = useAppDispatch();
     const hasToken = isClient ? !!Cookies.get("access_token") : false;
     const currentUser = useAppSelector((state) => state.user);
 
@@ -19,7 +19,7 @@ export function AuthInitializer() {
     }, []);
 
     useEffect(() => {
-        if (!isClient) return; // Не выполняем логику на сервере
+        if (!isClient) return;
 
         console.log("🔍 [AUTH_INIT] Initial state check:", {
             hasToken,
@@ -28,12 +28,28 @@ export function AuthInitializer() {
             course: currentUser?.course,
         });
 
-        // Если есть токен но нет данных в Redux, возможно нужно очистить и перенаправить
+        // Если есть токен но нет данных в Redux
         if (hasToken && !currentUser?.username) {
-            console.log("⚠️ [AUTH_INIT] Token exists but no user data in Redux");
-            // Здесь можно добавить логику для очистки токена и редиректа
+            console.log("⚠️ [AUTH_INIT] Token exists but no user data");
+            
+            // Проверяем localStorage
+            const storedUser = localStorage.getItem("user");
+            if (!storedUser) {
+                console.log("❌ [AUTH_INIT] No user in localStorage - clearing tokens");
+                Cookies.remove("access_token");
+                Cookies.remove("refresh_token");
+                dispatch(clearUser());
+                router.replace("/login");
+            }
         }
-    }, [isClient, hasToken, currentUser]);
 
-    return null; // Этот компонент ничего не рендерит
+        // Если нет токена но есть данные в Redux - очищаем Redux
+        if (!hasToken && currentUser?.username) {
+            console.log("🧹 [AUTH_INIT] No token but user data exists - clearing state");
+            dispatch(clearUser());
+            localStorage.removeItem("user");
+        }
+    }, [isClient, hasToken, currentUser, router, dispatch]);
+
+    return null;
 }

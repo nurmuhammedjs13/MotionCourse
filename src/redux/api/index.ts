@@ -5,10 +5,10 @@ import {
     BaseQueryFn,
     FetchArgs,
     FetchBaseQueryError,
+    BaseQueryApi,
 } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 
-// Интерфейс для ответа refresh token
 interface RefreshTokenResponse {
     access: string;
 }
@@ -16,7 +16,6 @@ interface RefreshTokenResponse {
 const baseQuery = fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_MOTIONCOURSE_API,
     prepareHeaders: (headers) => {
-        // Добавляем access token из cookies в каждый запрос
         const token = Cookies.get("access_token");
         if (token) {
             headers.set("Authorization", `Bearer ${token}`);
@@ -29,21 +28,23 @@ const baseQueryWithReauth: BaseQueryFn<
     string | FetchArgs,
     unknown,
     FetchBaseQueryError
-> = async (args, api, extraOptions) => {
+> = async (
+    args: string | FetchArgs,
+    api: BaseQueryApi,
+    extraOptions: object
+) => {
     let result = await baseQuery(args, api, extraOptions);
 
-    // Получаем URL запроса
     const url = typeof args === "string" ? args : args.url;
-
-    // Проверяем, это НЕ запрос логина
     const isLoginRequest = url.includes("/login");
+    const isRefreshRequest = url.includes("/token/refresh");
 
-    // Если получили 401 ошибку И это НЕ логин - пробуем обновить токен
-    if (result.error && result.error.status === 401 && !isLoginRequest) {
+    // Если получили 401 ошибку И это НЕ логин И НЕ refresh
+    if (result.error && result.error.status === 401 && !isLoginRequest && !isRefreshRequest) {
+        console.log("🔄 [API] Got 401, attempting token refresh");
         const refreshToken = Cookies.get("refresh_token");
 
         if (refreshToken) {
-            // Пытаемся обновить access token
             const refreshResult = await baseQuery(
                 {
                     url: "/api/token/refresh",
@@ -51,32 +52,35 @@ const baseQueryWithReauth: BaseQueryFn<
                     body: { refresh: refreshToken },
                 },
                 api,
-                extraOptions,
+                extraOptions
             );
 
             if (refreshResult.data) {
-                // Успешно обновили токен - сохраняем новый access token
                 const data = refreshResult.data as RefreshTokenResponse;
                 const newAccessToken = data.access;
 
                 Cookies.set("access_token", newAccessToken, {
-                    expires: 1 / 24, // 1 час
+                    expires: 1 / 24,
                     path: "/",
                 });
 
-                // Повторяем оригинальный запрос с новым токеном
+                console.log("✅ [API] Token refreshed successfully");
                 result = await baseQuery(args, api, extraOptions);
             } else {
-                // Не удалось обновить токен - удаляем все токены и редиректим
+                console.log("❌ [API] Failed to refresh token - logging out");
                 Cookies.remove("access_token");
                 Cookies.remove("refresh_token");
+                localStorage.removeItem("user");
 
                 if (typeof window !== "undefined") {
                     window.location.href = "/login";
                 }
             }
         } else {
-            // Нет refresh token - редиректим на логин
+            console.log("❌ [API] No refresh token - logging out");
+            Cookies.remove("access_token");
+            localStorage.removeItem("user");
+
             if (typeof window !== "undefined") {
                 window.location.href = "/login";
             }

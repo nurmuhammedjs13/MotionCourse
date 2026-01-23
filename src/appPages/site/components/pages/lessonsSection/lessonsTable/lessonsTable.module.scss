@@ -1,15 +1,17 @@
 .empty {
-    width: 100wh;
-    height: 100vh;
+    grid-column: 1 / -1; // Занимает всю ширину грида
     display: flex;
     align-items: center;
     justify-content: center;
-    align-content: center;
+    min-height: 300px;
     color: white;
+    font-size: 18px;
 }
+
 .LessonsTable {
     background: black;
     padding: 30px 0;
+    height: 100vh;
 
     .content {
         display: flex;
@@ -20,11 +22,21 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-
-            .cardsTitle {
-                color: red;
-                font-size: 50px;
+            .titleContent {
+                display: flex;
+                align-items: center;
+                flex-direction: row;
+                gap: 30px;
+                .cardsTitle {
+                    color: red;
+                    font-size: 50px;
+                }
+                .cardsTitleCourse {
+                    color: white;
+                    font-size: 30px;
+                }
             }
+            
 
             .filters {
                 display: flex;
@@ -44,7 +56,7 @@
 
                 .input:focus {
                     outline: none;
-                    border-color: #007bff;
+                    border-color: #ffffff;
                 }
 
                 .input[type="date"] {
@@ -62,7 +74,7 @@
 
         .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
             gap: 30px;
 
             .card {
@@ -72,11 +84,19 @@
                 overflow: hidden;
                 cursor: pointer;
                 transition: all 0.3s ease;
+                width: 100%;
+                padding: 15px;
+                color: white;
+                background-color: black;
+                border: 2px solid white;
+                box-shadow: 5px 5px 0 rgb(255, 0, 0);
+                font-size: 16px;
+                appearance: none;
 
                 &:hover {
                     transform: translateY(-5px);
-                    border-color: #007bff;
-                    box-shadow: 0 10px 20px rgba(0, 123, 255, 0.3);
+                    border-color: #ffffff;
+                    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
                 }
 
                 .image {
@@ -199,37 +219,39 @@
     .LessonsTable {
         padding: 20px 10px;
 
-        .title {
-            gap: 15px;
+        .content {
+            .title {
+                gap: 15px;
 
-            .cardsTitle {
-                font-size: 28px;
-            }
-        }
-
-        .cards {
-            gap: 15px;
-        }
-
-        .card {
-            padding: 15px;
-
-            .image {
-                width: 100%;
-                max-width: 150px;
-                height: auto;
+                .cardsTitle {
+                    font-size: 28px;
+                }
             }
 
-            .cardInfo {
-                padding-top: 10px;
+            .cards {
+                gap: 15px;
+            }
 
-                h3 {
-                    font-size: 14px;
+            .card {
+                padding: 15px;
+
+                .image {
+                    width: 100%;
+                    max-width: 150px;
+                    height: auto;
                 }
 
-                p,
-                .date {
-                    font-size: 12px;
+                .cardInfo {
+                    padding-top: 10px;
+
+                    h3 {
+                        font-size: 14px;
+                    }
+
+                    p,
+                    .date {
+                        font-size: 12px;
+                    }
                 }
             }
         }

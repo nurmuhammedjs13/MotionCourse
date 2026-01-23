@@ -2,61 +2,49 @@
 
 import React, { useState } from "react";
 import style from "./lessonsTable.module.scss";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useGetLessonsQuery } from "@/redux/api/lessons";
-import { useGetCourseVideosQuery } from "@/redux/api/video";
+import { useGetCourseVideosQuery, useGetLessonDetailQuery } from "@/redux/api/lessons";
 import { useAppSelector } from "@/redux/hooks";
 
 function LessonsTable() {
     const [search, setSearch] = useState("");
-    const [date, setDate] = useState("");
+    const [lessonNumber, setLessonNumber] = useState("");
     const router = useRouter();
+    
     const currentUser = useAppSelector((state) => state.user);
-
-    const { data: courses = [] } = useGetLessonsQuery();
     
     // Получаем видео курса пользователя
-    const { data: videos = [], isLoading: videosLoading } = useGetCourseVideosQuery(
+    const { data: videos = [], isLoading } = useGetCourseVideosQuery(
         {
-            course_id: currentUser?.course?.toString() || "1",
+            course_id: currentUser?.course?.toString() || "",
+            category_lesson: search || undefined,
+            lesson_number: lessonNumber || undefined,
         },
         {
             skip: !currentUser?.course,
         }
     );
 
-    // Определяем, что показывать: видео или курсы
-    const showVideos = currentUser?.status === "mentor";
+    // Получаем детали курса по ID из профиля пользователя
+    const { data: courseDetail, isLoading: isCourseLoading } = useGetLessonDetailQuery(
+        currentUser?.course || 0,
+        {
+            skip: !currentUser?.course,
+        }
+    );
 
-    const filteredCourses: LESSONS.GetLessonsResponse = courses.filter((item) => {
-        const matchesName = item.course_name
-            .toLowerCase()
-            .includes(search.toLowerCase());
-
-        const matchesDate = date ? item.created_at === date : true;
-
-        return matchesName && matchesDate;
+    // Фильтрация на клиентской стороне (если бэкенд не фильтрует должным образом)
+    const filteredVideos = videos.filter((video) => {
+        const matchesCategory = !search || 
+            video.category_lesson.ct_lesson_name.toLowerCase().includes(search.toLowerCase());
+        const matchesNumber = !lessonNumber || 
+            video.lesson_number.toString() === lessonNumber;
+        
+        return matchesCategory && matchesNumber;
     });
 
-    const filteredVideos: VIDEO.GetVideoListResponse = videos.filter((video) => {
-        const matchesName = video.category_lesson.ct_lesson_name
-            .toLowerCase()
-            .includes(search.toLowerCase());
-
-        const matchesLesson = search
-            ? video.lesson_number.toString() === search
-            : true;
-
-        return matchesName && matchesLesson;
-    });
-
-    const handleCourseClick = (item: LESSONS.LessonItem): void => {
-        router.push(`/lessons/${item.id}`);
-    };
-
-    const handleVideoClick = (video: VIDEO.VideoListItem): void => {
-        router.push(`/mentor/video/${video.id}`);
+    const handleVideoClick = (video: LESSONS.VideoListItem): void => {
+        router.push(`/lessons/${video.id}`);
     };
 
     return (
@@ -64,97 +52,60 @@ function LessonsTable() {
             <div className="container">
                 <div className={style.content}>
                     <div className={style.title}>
-                        <h2 className={style.cardsTitle}>
-                            {showVideos ? "ВИДЕОУРОКИ" : "БИБЛИОТЕКА УРОКОВ"}
-                        </h2>
+                        <div className={style.titleContent}>
+                            <h2 className={style.cardsTitle}>
+                                БИБЛИОТЕКА УРОКОВ
+                            </h2>
+                            {courseDetail && (
+                                <h2 className={style.cardsTitleCourse}>
+                                    {courseDetail.course_name}
+                                </h2>
+                            )}
+                        </div>
                         <div className={style.filters}>
                             <input
                                 type="text"
-                                placeholder={showVideos ? "Поиск по категории..." : "Поиск по названию..."}
+                                placeholder="Поиск по названию урока..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 className={style.input}
                             />
-
-                            {showVideos ? (
-                                <input
-                                    type="text"
-                                    placeholder="Номер урока..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    className={style.input}
-                                />
-                            ) : (
-                                <input
-                                    type="date"
-                                    placeholder="none"
-                                    value={date}
-                                    onChange={(e) => setDate(e.target.value)}
-                                    className={style.input}
-                                />
-                            )}
-                        </div>{" "}
+                            <input
+                                type="number"
+                                placeholder="Номер урока..."
+                                value={lessonNumber}
+                                onChange={(e) => setLessonNumber(e.target.value)}
+                                className={style.input}
+                                min="1"
+                            />
+                        </div>
                     </div>
                     <div className={style.cards}>
-                        {showVideos ? (
-                            filteredVideos.length > 0 ? (
-                                filteredVideos.map((video) => (
-                                    <div
-                                        key={video.id}
-                                        className={style.card}
-                                        onClick={() => handleVideoClick(video)}
-                                    >
-                                        <div className={style.videoCard}>
-                                            <div className={style.videoHeader}>
-                                                <h3>Урок #{video.lesson_number}</h3>
-                                                <span className={style.category}>
-                                                    {video.category_lesson.ct_lesson_name}
-                                                </span>
-                                            </div>
-                                            <div className={style.videoInfo}>
-                                                <p>ID видео: {video.id}</p>
-                                                <p>Курс: {video.course}</p>
-                                            </div>
+                        {!currentUser?.course ? (
+                            <p className={style.empty}>У вас нет назначенного курса</p>
+                        ) : isLoading ? (
+                            <p className={style.empty}>Загрузка...</p>
+                        ) : filteredVideos.length > 0 ? (
+                            filteredVideos.map((video) => (
+                                <div
+                                    key={video.id}
+                                    className={style.card}
+                                    onClick={() => handleVideoClick(video)}
+                                >
+                                    <div className={style.videoCard}>
+                                        <div className={style.videoHeader}>
+                                            <h3>Урок: {video.category_lesson.ct_lesson_name}</h3>
+                                        </div>
+                                        <div className={style.videoInfo}>
+                                            <p>Номер урока: {video.lesson_number}</p>
                                         </div>
                                     </div>
-                                ))
-                            ) : (
-                                <p className={style.empty}>
-                                    {videosLoading
-                                        ? "Загрузка..."
-                                        : "Ничего не найдено 😕"}
-                                </p>
-                            )
+                                </div>
+                            ))
                         ) : (
-                            filteredCourses.length > 0 ? (
-                                filteredCourses.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className={style.card}
-                                        onClick={() => handleCourseClick(item)}
-                                    >
-                                        <Image
-                                            width={300}
-                                            height={200}
-                                            src={item.course_image}
-                                            alt={item.course_name}
-                                            className={style.image}
-                                        />
-
-                                        <div className={style.cardInfo}>
-                                            <h3>{item.course_name}</h3>
-                                            <p>{item.description}</p>
-                                            <span className={style.date}>
-                                                {item.created_at}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className={style.empty}>Ничего не найдено 😕</p>
-                            )
+                            <p className={style.empty}>Ничего не найдено 😕</p>
                         )}
-                    </div>{" "}
+                    </div>
                 </div>
             </div>
         </section>

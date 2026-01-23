@@ -1,4 +1,5 @@
 import { api as index } from "..";
+
 const api = index.injectEndpoints({
     endpoints: (build) => ({
         getLessons: build.query<
@@ -20,7 +21,22 @@ const api = index.injectEndpoints({
                 method: "GET",
             }),
         }),
+        getCourseVideos: build.query<
+            LESSONS.GetVideoListResponse,
+            { course_id: string; category_lesson?: string; lesson_number?: string }
+        >({
+            query: ({ course_id, ...params }) => ({
+                url: `courses/${course_id}/videos/`,
+                method: "GET",
+                params,
+            }),
+            providesTags: ["video"],
+        }),
     }),
 });
 
-export const { useGetLessonsQuery, useGetLessonDetailQuery } = api;
+export const { 
+    useGetLessonsQuery, 
+    useGetLessonDetailQuery, 
+    useGetCourseVideosQuery 
+} = api;

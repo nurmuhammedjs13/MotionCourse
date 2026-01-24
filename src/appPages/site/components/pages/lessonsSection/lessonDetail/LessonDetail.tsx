@@ -1,16 +1,17 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import style from "./lessonDetail.module.scss";
 import { useGetVideosDetailQuery } from "@/redux/api/video";
 import { useGetCourseVideosQuery, useGetLessonDetailQuery } from "@/redux/api/lessons";
 import { useAppSelector } from "@/redux/hooks";
 
-function LessonDetail() {
+function LessonDetailContent() {
     const router = useRouter();
     const currentUser = useAppSelector((state) => state.user);
     const { id } = useParams();
+    const [visibleCount, setVisibleCount] = useState(6);
 
     // Получаем детали текущего видео
     const { 
@@ -52,36 +53,38 @@ function LessonDetail() {
     console.log("🔍 [LESSON_DETAIL] Video ID:", id);
     console.log("🔍 [LESSON_DETAIL] Has access:", hasAccess);
 
-    // Фильтруем видео: 
-    // 1. Та же категория урока (тема)
-    // 2. Исключаем текущее видео
-    // 3. Сортируем по номеру урока
-    // 4. Берем только следующие уроки (с большим номером)
-    const nextLessons = courseVideos
-        .filter((video) => {
-            // Та же категория урока
-            const sameCategory = videoDetail && 
-                video.category_lesson.id === videoDetail.category_lesson.id;
-            
-            // Не текущее видео
-            const notCurrent = video.id !== Number(id);
-            
-            // Номер урока больше текущего
-            const isNext = videoDetail && 
-                video.lesson_number > videoDetail.lesson_number;
-            
-            return sameCategory && notCurrent && isNext;
-        })
-        .sort((a, b) => a.lesson_number - b.lesson_number) // Сортируем по возрастанию номера
-        .slice(0, 6); // Ограничиваем количество (первые 6 следующих)
+    // Фильтруем видео с использованием useMemo для оптимизации
+    const allNextLessons = useMemo(() => {
+        return courseVideos
+            .filter((video) => {
+                const sameCategory = videoDetail && 
+                    video.category_lesson.id === videoDetail.category_lesson.id;
+                const notCurrent = video.id !== Number(id);
+                const isNext = videoDetail && 
+                    video.lesson_number > videoDetail.lesson_number;
+                
+                return sameCategory && notCurrent && isNext;
+            })
+            .sort((a, b) => a.lesson_number - b.lesson_number);
+    }, [courseVideos, videoDetail, id]);
+
+    // Видимые уроки
+    const nextLessons = allNextLessons.slice(0, visibleCount);
+    
+    // Есть ли еще уроки для показа
+    const hasMore = allNextLessons.length > visibleCount;
 
     console.log("🔍 [NEXT_LESSONS] Current category:", videoDetail?.category_lesson);
     console.log("🔍 [NEXT_LESSONS] Current lesson number:", videoDetail?.lesson_number);
-    console.log("🔍 [NEXT_LESSONS] Next lessons:", nextLessons);
-    console.log("🔍 [NEXT_LESSONS] Next lessons count:", nextLessons.length);
+    console.log("🔍 [NEXT_LESSONS] All next lessons:", allNextLessons.length);
+    console.log("🔍 [NEXT_LESSONS] Visible lessons:", nextLessons.length);
 
     const handleVideoClick = (video: LESSONS.VideoListItem): void => {
         router.push(`/lessons/${video.id}`);
+    };
+
+    const handleShowMore = () => {
+        setVisibleCount(prev => prev + 6);
     };
 
     useEffect(() => {
@@ -230,7 +233,7 @@ function LessonDetail() {
                         </div>
                     </div>
 
-                    {nextLessons.length > 0 && (
+                    {allNextLessons.length > 0 && (
                         <div className={style.table}>
                             <h2 className={style.title}>
                                 СЛЕДУЮЩИЕ УРОКИ ПО ТЕМЕ: {videoDetail.category_lesson.ct_lesson_name}
@@ -241,27 +244,41 @@ function LessonDetail() {
                                         key={video.id}
                                         className={style.card}
                                         onClick={() => handleVideoClick(video)}
-                                       
                                     >
-                                        <h3 
-                                           className={style.title}
-                                        >
+                                        <h3 className={style.cardTitle}>
                                             {video.category_lesson.ct_lesson_name}
                                         </h3>
-                                        <p 
-                                            
-                                        >
+                                        <p className={style.cardNumber}>
                                             Номер урока: {video.lesson_number}
                                         </p>
                                     </div>
                                 ))}
                             </div>
+
+                            {hasMore && (
+                                <div className={style.showMoreContainer}>
+                                    <button 
+                                        className={style.showMoreButton}
+                                        onClick={handleShowMore}
+                                    >
+                                        Показать больше ({allNextLessons.length - visibleCount} осталось)
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
             </div>
         </section>
     );
+}
+
+// Обертка с ключом для сброса состояния при изменении ID
+function LessonDetail() {
+    const { id } = useParams();
+    
+    // Используем id как ключ - это заставит React пересоздать компонент при изменении id
+    return <LessonDetailContent key={id as string} />;
 }
 
 export default LessonDetail;

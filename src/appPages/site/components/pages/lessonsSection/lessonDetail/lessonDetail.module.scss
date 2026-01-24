@@ -19,34 +19,31 @@
         padding: 0 20px;
     }
 
-    
+    h1 {
+        color: #dc3545;
+        margin-bottom: 20px;
+        font-size: 2rem;
+    }
 
-        h1 {
-            color: #dc3545;
-            margin-bottom: 20px;
-            font-size: 2rem;
-        }
+    p {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
 
-        p {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
+    .backButton {
+        padding: 12px 24px;
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.2s;
 
-        .backButton {
-            padding: 12px 24px;
-            background: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.2s;
-
-            &:hover {
-                background: #5a6268;
-            }
+        &:hover {
+            background: #5a6268;
         }
     }
 
@@ -118,6 +115,7 @@
                     border-radius: 10px;
                     background: white;
                 }
+
                 .themeBlock {
                     display: flex;
                     justify-content: space-between;
@@ -132,11 +130,7 @@
                         font-size: 14px;
                     }
                 }
-                .hr {
-                    height: 1px;
-                    border-radius: 10px;
-                    background: white;
-                }
+
                 .numberBlock {
                     display: flex;
                     justify-content: space-between;
@@ -150,12 +144,6 @@
                         color: white;
                         font-size: 14px;
                     }
-                }
-
-                .hr {
-                    height: 1px;
-                    border-radius: 10px;
-                    background: white;
                 }
 
                 .descBlock {
@@ -193,43 +181,40 @@
                 gap: 25px;
 
                 .card {
-                 background: #1a1a1a;
-                border: 2px solid #333;
-                border-radius: 5px;
-                overflow: hidden;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                width: 100%;
-                padding: 25px;
-                color: white;
-                background-color: black;
-                border: 2px solid white;
-                box-shadow: 5px 5px 0 rgb(255, 0, 0);
-                font-size: 16px;
-                appearance: none;
+                    background: #1a1a1a;
+                    border: 2px solid #333;
+                    border-radius: 5px;
+                    overflow: hidden;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    width: 100%;
+                    padding: 25px;
+                    color: white;
+                    background-color: black;
+                    border: 2px solid white;
+                    box-shadow: 5px 5px 0 rgb(255, 0, 0);
+                    font-size: 16px;
+                    appearance: none;
 
-                &:hover {
-                    transform: translateY(-5px);
-                    border-color: #ffffff;
-                    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
-                }
                     &:hover {
-                        box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
-                        transform: translateY(-4px);
+                        transform: translateY(-5px);
+                        border-color: #ffffff;
+                        box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
                     }
 
-                   h3 {
+                    .cardTitle {
                         color: white;
                         margin: 0 0 10px 0;
                         font-size: 18px;
                     }
 
-                    p {
+                    .cardNumber {
                         color: #ccc;
-                        margin: 0 0 10px 0;
+                        margin: 0;
                         font-size: 14px;
                         line-height: 1.4;
                     }
+
                     .image {
                         width: 100%;
                         height: 200px;
@@ -237,13 +222,40 @@
                         margin-bottom: 15px;
                         display: block;
                     }
+                }
+            }
 
-                   
+            .showMoreContainer {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 20px;
+
+                .showMoreButton {
+                    padding: 15px 40px;
+                    color: white;
+                    background-color: black;
+                    border: 2px solid white;
+                    box-shadow: 5px 5px 0 rgb(255, 0, 0);
+                    font-size: 18px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+
+                    &:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 7px 7px 0 rgb(255, 0, 0);
+                    }
+
+                    &:active {
+                        transform: translateY(0);
+                        box-shadow: 3px 3px 0 rgb(255, 0, 0);
+                    }
                 }
             }
         }
     }
-
+}
 
 @media (max-width: 1200px) {
     .LessonDetail {
@@ -289,6 +301,11 @@
             .table .cards .card .image {
                 max-width: 100%;
             }
+
+            .table .showMoreContainer .showMoreButton {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
         }
     }
 }
@@ -311,16 +328,18 @@
             .table .cards .card {
                 padding: 15px;
 
-                .cardInfo {
-                    h3 {
-                        font-size: 16px;
-                    }
-
-                    p,
-                    .date {
-                        font-size: 12px;
-                    }
+                .cardTitle {
+                    font-size: 16px;
                 }
+
+                .cardNumber {
+                    font-size: 12px;
+                }
+            }
+
+            .table .showMoreContainer .showMoreButton {
+                padding: 10px 25px;
+                font-size: 14px;
             }
         }
     }

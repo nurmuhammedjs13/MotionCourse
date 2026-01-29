@@ -27,7 +27,7 @@ function LessonsTable() {
     );
 
     // Получаем детали курса по ID из профиля пользователя
-    const { data: courseDetail, isLoading: isCourseLoading } = useGetLessonDetailQuery(
+    const { data: courseDetail } = useGetLessonDetailQuery(
         currentUser?.course || 0,
         {
             skip: !currentUser?.course,

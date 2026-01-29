@@ -3,7 +3,7 @@
 
 import { useMemo } from "react";
 import { Provider } from "react-redux";
-import { makeStoreWithMiddleware, AppStore } from "./store";
+import { makeStoreWithMiddleware } from "./store";
 import { AuthInitializer } from "@/components/AuthInitializer";
 
 export default function StoreProvider({

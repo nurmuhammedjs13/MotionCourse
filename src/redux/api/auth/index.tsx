@@ -93,8 +93,8 @@ export const authApi = api.injectEndpoints({
                     const { data } = await queryFulfilled;
                     
                     // Получаем текущие данные пользователя из Redux
-                    const currentState = getState() as any;
-                    const currentUser = currentState.user;
+                    const currentState = getState() as unknown;
+                    const currentUser = (currentState as { user: { username?: string; status?: string; email?: string } }).user;
 
                     // Автоматически обновляем профиль пользователя в Redux
                     if (data.user && currentUser?.username) {
@@ -126,7 +126,7 @@ export const authApi = api.injectEndpoints({
                                 role: data.user.role,
                                 id: data.user.id,
                                 // /profile.role — источник правды (mentor/student)
-                                status: statusFromProfile ?? currentUser.status,
+                                status: statusFromProfile ?? currentUser.status ?? null,
                             })
                         );
                     } else {

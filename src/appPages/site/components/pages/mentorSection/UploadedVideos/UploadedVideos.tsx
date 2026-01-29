@@ -36,7 +36,7 @@ interface MentorVideoResponse {
     }>;
 }
 
-function UploadedVideos({ editingId: externalEditingId, setEditingId: externalSetEditingId }: UploadedVideosProps) {
+function UploadedVideos({ setEditingId: externalSetEditingId }: UploadedVideosProps) {
     const currentUser = useAppSelector((state) => state.user);
     const [search, setSearch] = useState("");
 
@@ -86,10 +86,11 @@ function UploadedVideos({ editingId: externalEditingId, setEditingId: externalSe
                 console.log("🗑️ [UPLOADED_VIDEOS] Deleting video:", id);
                 await deleteVideo(id).unwrap();
                 alert("Видео успешно удалено!");
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error("❌ [UPLOADED_VIDEOS] Delete error:", error);
                 
-                if (error?.status === 403) {
+                const errorObj = error as { status?: number };
+                if (errorObj?.status === 403) {
                     alert("Ошибка: У вас нет прав на удаление этого видео");
                 } else {
                     alert("Ошибка при удалении видео");

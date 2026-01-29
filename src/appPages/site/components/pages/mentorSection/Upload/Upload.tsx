@@ -35,6 +35,7 @@ interface ToastMessage {
 
 function Upload({ editingId, onCancel }: UploadProps) {
     const uploadRef = useRef<HTMLElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [formData, setFormData] = useState<{
         course: string;
         category_lesson: string;
@@ -81,6 +82,11 @@ function Upload({ editingId, onCancel }: UploadProps) {
         });
         setFieldErrors({});
         loadedVideoIdRef.current = null;
+        
+        // Reset file input
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
     
     useEffect(() => {
@@ -99,6 +105,11 @@ function Upload({ editingId, onCancel }: UploadProps) {
                     videoPreview: null,
                 });
                 setFieldErrors({});
+                
+                // Reset file input
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
                 
                 // Then load new data
                 setFormData({
@@ -433,6 +444,7 @@ function Upload({ editingId, onCancel }: UploadProps) {
                                         {editingId ? 'Новое видео (необязательно)' : 'Видео'}
                                     </h2>
                                     <input
+                                        ref={fileInputRef}
                                         name="videoFile"
                                         onChange={handleFileChange}
                                         placeholder="видео"

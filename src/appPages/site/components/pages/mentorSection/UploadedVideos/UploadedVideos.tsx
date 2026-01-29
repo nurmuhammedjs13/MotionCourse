@@ -204,9 +204,7 @@ function UploadedVideos({ setEditingId: externalSetEditingId }: UploadedVideosPr
                                                     <h2 className={style.lessonTheme}>
                                                         Урок №{item.lesson_number || 'Не указан'}
                                                     </h2>
-                                                    <h2 className={style.lessonData}>
-                                                        {item.description || 'Нет описания'}
-                                                    </h2>
+                                                  
                                                 </div>
                                             </div>
                                         </div>

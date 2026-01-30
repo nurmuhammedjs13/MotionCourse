@@ -10,6 +10,7 @@ import Logo from "@/assets/Icons/Logo.svg";
 import { useLogoutMutation } from "@/redux/api/auth";
 import { useAppSelector } from "@/redux/hooks";
 import Cookies from "js-cookie";
+import { navigateToHome } from "@/utils/navigation";
 
 interface LinkItem {
     name: string;
@@ -107,7 +108,7 @@ const Header: React.FC = () => {
             <div className="container">
                 <div className={style.content}>
                     <div
-                        onClick={() => router.push("/home")}
+                        onClick={() => navigateToHome(router)}
                         className={style.logoButton}
                     >
                         <Image className={style.logo} src={Logo} alt="Logo" />

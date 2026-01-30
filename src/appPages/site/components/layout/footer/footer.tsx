@@ -5,11 +5,13 @@ import style from "./Footer.module.scss";
 import { useRouter } from "next/navigation";
 
 import LogoIcon from "@/assets/Icons/Logo.svg";
+import { navigateToHome } from "@/utils/navigation";
 
 const Links = [
     {
         name: "→ Главная",
         href: "/home",
+        isHome: true,
     },
     {
         name: "→ Уроки",
@@ -31,7 +33,7 @@ function Footer() {
                     <div className={style.topBlockFooter}>
                         <div className={style.firstTopBlock}>
                             <div
-                                onClick={() => router.push("/home")}
+                                onClick={() => navigateToHome(router)}
                                 className={style.footerLogo}
                             >
                                 <Image
@@ -57,7 +59,15 @@ function Footer() {
                                 {Links.map((link, index) => (
                                     <a
                                         key={index}
-                                        onClick={() => router.push(link.href)}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (link.isHome) {
+                                                navigateToHome(router);
+                                            } else {
+                                                router.push(link.href);
+                                            }
+                                        }}
+                                        href={link.href}
                                     >
                                         {link.name}
                                     </a>

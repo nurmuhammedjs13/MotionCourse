@@ -1,37 +1,23 @@
 // src/components/Chat/ChatWindow.module.scss
 .chatWindow {
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background: var(--bg-primary);
   height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  margin: 0; // Убираем все отступы
-  padding: 0; // Убираем все padding
-  
-  // Анимированный фон
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.03), transparent);
-    animation: shimmer 15s infinite;
-    pointer-events: none;
-  }
+  margin: 0;
+  padding: 0;
 
   .chatHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 24px; // Уменьшили высоту с 24px до 16px
-    border-bottom: 2px solid var(--accent-primary);
-    background: var(--bg-card);
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-primary);
+    background: white;
     position: relative;
     z-index: 2;
-    backdrop-filter: blur(10px);
 
     .headerLeft {
       display: flex;
@@ -43,7 +29,7 @@
     .backButton {
       background: var(--bg-secondary);
       color: var(--text-primary);
-      border: 2px solid var(--accent-primary);
+      border: 1px solid var(--border-primary);
       box-shadow: var(--shadow-sm);
       padding: 10px;
       cursor: pointer;
@@ -51,12 +37,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-md);
       
       &:hover {
         transform: translateY(-2px);
         box-shadow: var(--shadow-md);
-        color: white;
+        background: var(--bg-hover);
       }
       
       &:active {
@@ -71,10 +57,10 @@
 
       .chatTitle {
         color: var(--text-primary);
-        font-size: 20px;
-        font-weight: 700;
+        font-size: 18px;
+        font-weight: 600;
         margin: 0;
-        font-family: "Space Grotesk", sans-serif;
+        font-family: "Inter", sans-serif;
         transition: all var(--transition-normal);
       }
 
@@ -84,15 +70,14 @@
         gap: 12px;
 
       .chatPartnerRole {
-    color: rgb(255, 255, 255);
+    color: white;
     font-size: 10px;
-    font-weight: 600;
-    font-family: "Space Grotesk", sans-serif;
+    font-weight: 500;
+    font-family: "Inter", sans-serif;
     padding: 3px 7px;
-    background: rgb(171, 0, 0);
-    border-radius: 5px;
+    background: var(--accent-primary);
+    border-radius: var(--radius-sm);
     position: relative;
-
 }
 
       }
@@ -135,11 +120,11 @@
       .headerButton {
         background: var(--bg-secondary);
         color: var(--text-primary);
-        border: 2px solid var(--border-primary);
+        border: 1px solid var(--border-primary);
         padding: 10px;
         cursor: pointer;
         transition: all var(--transition-normal);
-        border-radius: var(--radius-lg);
+        border-radius: var(--radius-md);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -176,7 +161,6 @@
     padding: 12px 20px;
     background: var(--bg-secondary);
     border-top: 1px solid var(--border-primary);
-    backdrop-filter: blur(10px);
 
     .typingDots {
       display: flex;
@@ -204,9 +188,10 @@
   }
 
   .chatFooter {
-    background: var(--bg-card);
+    background: white;
     position: relative;
     z-index: 2;
+    border-top: 1px solid var(--border-primary);
 
     .scrollToBottomButton {
       position: absolute;
@@ -216,13 +201,13 @@
       height: 48px;
       border-radius: 50%;
       background: var(--accent-primary);
-      border: 2px solid var(--accent-primary);
+      border: none;
       color: white;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--shadow-lg), 0 0 20px rgba(255, 51, 51, 0.4);
+      box-shadow: var(--shadow-md);
       transition: all var(--transition-normal);
       z-index: 100;
       
@@ -239,7 +224,7 @@
       &:hover {
         transform: translateY(-3px) scale(1.05);
         background: var(--accent-hover);
-        box-shadow: var(--shadow-lg), 0 0 30px rgba(255, 51, 51, 0.6);
+        box-shadow: var(--shadow-lg);
       }
       
       &:active {
@@ -263,8 +248,8 @@
     right: 0;
     width: 320px;
     height: 100%;
-    background: var(--bg-card);
-    border-left: 2px solid var(--accent-primary);
+    background: white;
+    border-left: 1px solid var(--border-primary);
     box-shadow: var(--shadow-lg);
     z-index: 10;
     overflow-y: auto;
@@ -294,12 +279,12 @@
 
     h4 {
       color: var(--text-primary);
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 600;
       margin: 0;
-      font-family: "Space Grotesk", sans-serif;
+      font-family: "Inter", sans-serif;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
     .closeButton {
@@ -330,34 +315,15 @@
     align-items: center;
     gap: 10px;
     padding: 12px;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     transition: all var(--transition-normal);
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.1), transparent);
-      transition: left var(--transition-slow);
-    }
 
     &:hover {
       background: var(--bg-hover);
       transform: translateX(4px);
-      
-      &::before {
-        left: 100%;
-      }
-    }
-
-    &.clickable:hover {
-      background: var(--bg-hover);
     }
   }
 
@@ -368,17 +334,17 @@
     .avatarPlaceholder {
       width: 40px;
       height: 40px;
-      border: 2px solid var(--accent-primary);
+      border: 2px solid var(--border-primary);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 16px;
       color: var(--text-primary);
       background: var(--bg-secondary);
       transition: all var(--transition-normal);
-      font-family: "Space Grotesk", sans-serif;
+      font-family: "Inter", sans-serif;
       box-shadow: var(--shadow-sm);
     }
   }
@@ -397,14 +363,14 @@
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 4px;
-    font-family: "Space Grotesk", sans-serif;
+    font-family: "Inter", sans-serif;
   }
 
   .memberRole {
     color: var(--text-muted);
     font-size: 12px;
     font-weight: 500;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Inter", sans-serif;
   }
 
   .privateChatIndicator {
@@ -424,46 +390,13 @@
   }
 }
 
-// Дополнительные анимации
-@keyframes typing-dot {
-    0%, 60%, 100% {
-      transform: translateY(0);
-      opacity: 0.3;
-    }
-    30% {
-      transform: translateY(-10px);
-      opacity: 1;
-    }
-}
-
-@keyframes slideIn {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-}
-
-@keyframes pulse-role {
-    0%, 100% { opacity: 0.1; transform: scale(1); }
-    50% { opacity: 0.2; transform: scale(1.05); }
-}
-
-@keyframes glow-red {
-    0%, 100% { text-shadow: 0 0 30px rgba(255, 51, 51, 0.8); }
-    50% { text-shadow: 0 0 50px rgba(255, 51, 51, 1); }
-}
-
 /* Mobile */
 @media (max-width: 768px) {
   .chatFooter{
     border-top: none;
     
     .scrollToBottomButton {
-      bottom: calc(100% + 10px); // Меньший отступ для мобильных устройств
+      bottom: calc(100% + 10px);
       right: 15px;
       width: 44px;
       height: 44px;
@@ -481,7 +414,7 @@
       
       .userInfoRow {
         .chatPartnerRole {
-          font-size: 11px; // Еще меньше для мобильных
+          font-size: 11px;
         }
         
         .chatStatus {
@@ -502,9 +435,20 @@
       top: 0;
       right: 0;
       left: auto;
-      border-left: 2px solid var(--accent-primary);
+      border-left: 1px solid var(--border-primary);
       border-top: none;
     }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -517,4 +461,20 @@
     opacity: 0;
     transform: translateY(10px);
   }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
 }

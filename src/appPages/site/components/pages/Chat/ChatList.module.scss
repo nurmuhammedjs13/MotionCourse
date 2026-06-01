@@ -4,7 +4,6 @@
   height: 100vh; // Максимальная высота 100vh
   display: flex;
   flex-direction: column;
-  border-right: 2px solid var(--accent-primary);
   overflow: hidden;
   position: relative;
   
@@ -23,7 +22,7 @@
 
   .chatListHeader {
     padding: 24px;
-    border-bottom: 2px solid var(--accent-primary);
+    border-bottom: 2px solid rgb(234, 234, 234);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -241,7 +240,7 @@
       left: 50%;
       width: 200px;
       height: 200px;
-      background: radial-gradient(circle, rgba(255, 51, 51, 0.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
       transform: translate(-50%, -50%);
       animation: pulse 4s ease-in-out infinite;
     }

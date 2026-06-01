@@ -1,40 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300..700&display=swap");
 
 .footer {
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-    padding: 40px 0;
-    border-top: 2px solid var(--accent-primary);
+    background: var(--bg-secondary);
+    padding: 60px 0;
+    border-top: 1px solid var(--border-primary);
     position: relative;
     overflow: hidden;
-    
-    // Анимированный фон
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.03), transparent);
-        animation: shimmer 12s infinite;
-        pointer-events: none;
-    }
-    
-    // Плавающие частицы
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: 
-            radial-gradient(circle at 10% 20%, rgba(255, 51, 51, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(255, 51, 51, 0.03) 0%, transparent 50%),
-            radial-gradient(circle at 40% 60%, rgba(255, 51, 51, 0.04) 0%, transparent 50%);
-        animation: float 10s ease-in-out infinite;
-        pointer-events: none;
-    }
     
     .content {
         display: flex;
@@ -65,29 +36,13 @@
                     transition: all var(--transition-normal);
                     
                     &:hover {
-                        transform: translateY(-2px) scale(1.05);
-                        
-                        .logo {
-                            transform: rotate(360deg) scale(1.1);
-                        }
-                        
-                        .logoTextBlock {
-                            .logoText1 {
-                                text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-                            }
-                            
-                            .logoText2 {
-                                text-shadow: 0 0 25px rgba(255, 51, 51, 0.8);
-                                transform: scale(1.1);
-                            }
-                        }
+                        color: var(--accent-primary);
                     }
                     
                     .logo {
-                        width: 60px; // Уменьшено с 80px
+                        width: 60px;
                         height: auto;
                         transition: all var(--transition-slow);
-                        filter: drop-shadow(0 0 10px rgba(255, 51, 51, 0.3));
                     }
                     
                     .logoTextBlock {
@@ -98,21 +53,18 @@
                         justify-content: center;
                         
                         .logoText1 {
-                            color: var(--text-primary);
-                            font-size: 20px; // Уменьшено с 28px
+                            color: var(--accent-primary);
+                            font-size: 20px;
                             font-weight: 700;
-                            font-family: "Space Grotesk", sans-serif;
-                            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+                            font-family: "Inter", sans-serif;
                             transition: all var(--transition-normal);
                         }
                         
                         .logoText2 {
-                            color: var(--accent-primary);
-                            font-size: 20px; // Уменьшено с 28px
+                            color: var(--text-primary);
+                            font-size: 20px;
                             font-weight: 700;
-                            font-family: "Space Grotesk", sans-serif;
-                            text-shadow: 0 0 20px rgba(255, 51, 51, 0.6);
-                            animation: pulse-red 2s ease-in-out infinite;
+                            font-family: "Inter", sans-serif;
                             transition: all var(--transition-normal);
                         }
                     }
@@ -121,10 +73,10 @@
                 .footerLogoInfo {
                     color: var(--text-secondary);
                     font-size: 15px;
-                    font-family: "Playfair Display", serif;
+                    font-family: "Inter", sans-serif;
                     letter-spacing: 0.02em;
-                    font-weight: 600;
-                    animation: fadeInUp 1s ease-out;
+                    font-weight: 400;
+                    line-height: 1.6;
                 }
             }
             
@@ -133,16 +85,15 @@
                 display: flex;
                 flex-direction: column;
                 gap: 16px;
-                
+
                 .title {
-                    color: var(--accent-primary);
-                    font-size: 20px;
+                    color: var(--text-primary);
+                    font-size: 18px;
                     font-weight: 700;
-                    font-family: "Space Grotesk", sans-serif;
+                    font-family: "Inter", sans-serif;
                     text-transform: uppercase;
-                    letter-spacing: 1px;
-                    text-shadow: 0 0 15px rgba(255, 51, 51, 0.5);
-                    animation: glow-red 3s ease-in-out infinite;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 16px;
                 }
                 
                 .footerNavs {
@@ -154,34 +105,15 @@
                         color: var(--text-primary);
                         font-family: "Inter", sans-serif;
                         letter-spacing: 0.02em;
-                        font-weight: 600;
+                        font-weight: 500;
                         text-decoration: none;
-                        font-size: 16px;
+                        font-size: 15px;
                         cursor: pointer;
                         transition: all var(--transition-normal);
-                        position: relative;
-                        overflow: hidden;
-                        
-                        &::before {
-                            content: '';
-                            position: absolute;
-                            top: 0;
-                            left: -100%;
-                            width: 100%;
-                            height: 100%;
-                            background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.1), transparent);
-                            transition: left var(--transition-slow);
-                            z-index: -1;
-                        }
                         
                         &:hover {
                             color: var(--accent-primary);
                             transform: translateX(4px);
-                            text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
-                            
-                            &::before {
-                                left: 100%;
-                            }
                         }
                     }
                 }
@@ -193,16 +125,15 @@
                 padding: 0;
                 flex-direction: column;
                 gap: 16px;
-                
+
                 .title {
-                    color: var(--accent-primary);
-                    font-size: 20px;
+                    color: var(--text-primary);
+                    font-size: 18px;
                     font-weight: 700;
-                    font-family: "Space Grotesk", sans-serif;
+                    font-family: "Inter", sans-serif;
                     text-transform: uppercase;
-                    letter-spacing: 1px;
-                    text-shadow: 0 0 15px rgba(255, 51, 51, 0.5);
-                    animation: glow-red 3s ease-in-out infinite;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 16px;
                 }
                 
                 .contactsContent {
@@ -213,34 +144,15 @@
                     .footerContacts {
                         transition: all var(--transition-normal);
                         color: var(--text-primary);
-                        font-size: 16px;
+                        font-size: 15px;
                         font-family: "Inter", sans-serif;
                         letter-spacing: 0.02em;
-                        font-weight: 600;
+                        font-weight: 500;
                         cursor: pointer;
-                        position: relative;
-                        overflow: hidden;
-                        
-                        &::before {
-                            content: '';
-                            position: absolute;
-                            top: 0;
-                            left: -100%;
-                            width: 100%;
-                            height: 100%;
-                            background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.1), transparent);
-                            transition: left var(--transition-slow);
-                            z-index: -1;
-                        }
-                        
+
                         &:hover {
                             color: var(--accent-primary);
                             transform: translateX(4px);
-                            text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
-                            
-                            &::before {
-                                left: 100%;
-                            }
                         }
                     }
                 }
@@ -248,22 +160,9 @@
         }
         
         .hr {
-            height: 2px;
+            height: 1px;
             background: var(--border-primary);
             border-radius: var(--radius-lg);
-            position: relative;
-            overflow: hidden;
-            
-            &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-                animation: shimmer 8s infinite;
-            }
         }
         
         .bottomBlockFooter {
@@ -276,11 +175,8 @@
             .bottomFirstBlock {
                 color: var(--text-muted);
                 font-size: 14px;
-                font-family: "JetBrains Mono", monospace;
-                font-weight: 500;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                animation: fadeInUp 1s ease-out;
+                font-family: "Inter", sans-serif;
+                font-weight: 400;
             }
             
             .bottomSecondBlock {
@@ -293,58 +189,17 @@
                     color: var(--text-primary);
                     font-size: 14px;
                     font-family: "Inter", sans-serif;
-                    font-weight: 600;
+                    font-weight: 500;
                     transition: all var(--transition-normal);
-                    position: relative;
-                    overflow: hidden;
-                    
-                    &::before {
-                        content: '';
-                        position: absolute;
-                        top: 0;
-                        left: -100%;
-                        width: 100%;
-                        height: 100%;
-                        background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.1), transparent);
-                        transition: left var(--transition-slow);
-                        z-index: -1;
-                    }
                     
                     &:hover {
                         color: var(--accent-primary);
                         transform: translateX(4px);
-                        text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
-                        
-                        &::before {
-                            left: 100%;
-                        }
                     }
                 }
             }
         }
     }
-}
-
-// Дополнительные анимации
-@keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    33% { transform: translateY(-15px) rotate(1deg); }
-    66% { transform: translateY(8px) rotate(-1deg); }
-}
-
-@keyframes pulse-red {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(1.05); }
-}
-
-@keyframes glow-red {
-    0%, 100% { text-shadow: 0 0 15px rgba(255, 51, 51, 0.5); }
-    50% { text-shadow: 0 0 25px rgba(255, 51, 51, 0.8); }
 }
 
 // Адаптив для 1024px
@@ -607,17 +462,6 @@
                 }
             }
         }
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
     }
 }
 

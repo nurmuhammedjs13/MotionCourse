@@ -1,41 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400..900&family=Space+Grotesk:wght@300..700&display=swap");
 
 .Main {
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+    background: var(--bg-primary);
     min-height: 100vh;
     width: 100%;
     overflow: hidden;
     position: relative;
-    
-    // Анимированные частицы на фоне
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: 
-            radial-gradient(circle at 10% 20%, rgba(255, 51, 51, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(255, 51, 51, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 40% 60%, rgba(255, 51, 51, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
-        animation: float 10s ease-in-out infinite;
-        pointer-events: none;
-    }
-    
-    // Shimmer эффект
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.05), transparent);
-        animation: shimmer 12s infinite;
-        pointer-events: none;
-    }
 
     .content {
         display: flex;
@@ -46,27 +16,14 @@
 
     .hero {
         display: flex;
-        padding: 60px 20px 80px 20px;
+        padding: 100px 20px 80px 20px;
         align-items: center;
         flex-direction: column;
         gap: 32px;
         justify-content: center;
         text-align: center;
-        min-height: 100vh;
+        min-height: calc(100vh - 80px);
         position: relative;
-        
-        // Свечение вокруг контента
-        &::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255, 51, 51, 0.1) 0%, transparent 70%);
-            transform: translate(-50%, -50%);
-            animation: pulse 4s ease-in-out infinite;
-        }
 
         .titleBlock {
             display: flex;
@@ -77,160 +34,63 @@
 
             .title1 {
                 color: var(--accent-primary);
-                font-size: 72px;
-                font-weight: 900;
-                font-family: "Space Grotesk", sans-serif;
-                text-transform: uppercase;
-                letter-spacing: 3px;
-                text-shadow: 0 0 30px rgba(255, 51, 51, 0.8);
-                animation: glow-red 3s ease-in-out infinite;
-                position: relative;
-                
-                // Дополнительный эффект свечения
-                &::after {
-                    content: '';
-                    position: absolute;
-                    top: -10px;
-                    left: -10px;
-                    right: -10px;
-                    bottom: -10px;
-                    background: radial-gradient(circle, rgba(255, 51, 51, 0.2) 0%, transparent 70%);
-                    animation: pulse-ring 4s ease-in-out infinite;
-                    z-index: -1;
-                }
+                font-size: 64px;
+                font-weight: 700;
+                font-family: "Inter", sans-serif;
+                letter-spacing: -1px;
+                line-height: 1.1;
             }
 
             .title2 {
                 color: var(--text-primary);
-                font-size: 72px;
-                font-weight: 900;
-                font-family: "Space Grotesk", sans-serif;
-                text-transform: uppercase;
-                letter-spacing: 3px;
-                text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-                animation: float 4s ease-in-out infinite;
+                font-size: 64px;
+                font-weight: 700;
+                font-family: "Inter", sans-serif;
+                letter-spacing: -1px;
+                line-height: 1.1;
             }
         }
 
         .titleInfo {
-            font-family: "Playfair Display", serif;
+            font-family: "Inter", sans-serif;
             letter-spacing: 0.02em;
-            font-size: 22px;
-            max-width: 800px;
+            font-size: 20px;
+            max-width: 700px;
             width: 100%;
-            line-height: 1.8;
+            line-height: 1.6;
             color: var(--text-secondary);
             position: relative;
             z-index: 3;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 24px;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-primary);
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 1s ease-out;
         }
 
       .heroButton {
-    background: var(--bg-card);
-    color: var(--text-primary);
-    padding: 20px 48px;
-    box-shadow: var(--shadow-lg);
-    font-size: 20px;
-    font-weight: 700;
-    border: 2px solid var(--accent-primary);
+    background: var(--accent-primary);
+    color: white;
+    padding: 16px 40px;
+    box-shadow: var(--shadow-sm);
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
     cursor: pointer;
-    font-family: "Space Grotesk", sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border-radius: var(--radius-lg);
+    font-family: "Inter", sans-serif;
+    letter-spacing: 0.5px;
+    border-radius: var(--radius-md);
     position: relative;
     overflow: hidden;
     transition: all var(--transition-normal);
     z-index: 3;
 
-    box-shadow: 0 0 0 rgba(255,0,0,0);
-
-    &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-            120deg,
-            transparent,
-            rgba(255,255,255,0.4),
-            transparent
-        );
-        transition: all 0.6s ease;
-    }
-
     &:hover {
-        transform: translateY(-3px) scale(1.03);
-        background: linear-gradient(135deg, #0f0f0f, #1a0000);
-        border-color: #ff0000;
-
-        box-shadow:
-            0 10px 30px rgba(255,0,0,0.4),
-            0 0 20px rgba(255,0,0,0.3);
-
-        color: #ffffff;
-    }
-
-    &:hover::before {
-        left: 100%;
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
     }
 
     &:active {
-        transform: translateY(1px) scale(0.98);
-        box-shadow: 0 4px 12px rgba(255,0,0,0.4);
-    }
-}
-
-    }
-}
-
-// Ключевые анимации
-@keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    33% { transform: translateY(-15px) rotate(1deg); }
-    66% { transform: translateY(8px) rotate(-1deg); }
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.1); }
-}
-
-@keyframes glow-red {
-    0%, 100% { text-shadow: 0 0 30px rgba(255, 51, 51, 0.8); }
-    50% { text-shadow: 0 0 50px rgba(255, 51, 51, 1); }
-}
-
-@keyframes pulse-ring {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    50% { opacity: 0.2; transform: scale(1.2); }
-}
-
-@keyframes border-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.05); }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
         transform: translateY(0);
+    }
+}
+
     }
 }
 

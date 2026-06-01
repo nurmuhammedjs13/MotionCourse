@@ -1,37 +1,7 @@
 .login {
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+    background: var(--bg-primary);
     position: relative;
     overflow: hidden;
-    
-    // Анимированные частицы на фоне
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: 
-            radial-gradient(circle at 10% 20%, rgba(255, 51, 51, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(255, 51, 51, 0.05) 0%, transparent 50%),
-            radial-gradient(circle at 40% 60%, rgba(255, 51, 51, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
-        animation: float 10s ease-in-out infinite;
-        pointer-events: none;
-    }
-    
-    // Shimmer эффект
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.05), transparent);
-        animation: shimmer 12s infinite;
-        pointer-events: none;
-    }
 
     .content {
         width: 100vw;
@@ -43,8 +13,8 @@
         z-index: 2;
 
         .form {
-            background: var(--bg-card);
-            border: 3px solid var(--accent-primary);
+            background: white;
+            border: 1px solid var(--border-primary);
             padding: 48px;
             display: flex;
             flex-direction: column;
@@ -53,102 +23,33 @@
             transition: all var(--transition-normal);
             max-width: 500px;
             width: 90%;
-            border-radius: var(--radius-xl);
+            border-radius: var(--radius-lg);
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(10px);
-            
-            // Анимированный фон формы
-            &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.05), transparent);
-                transition: left var(--transition-slow);
-                z-index: 0;
-            }
-
-           
-            
-          
 
             .title {
                 color: var(--accent-primary);
-                font-size: 42px;
-                font-weight: 900;
+                font-size: 32px;
+                font-weight: 700;
                 text-align: center;
-                font-family: "Space Grotesk", sans-serif;
-                text-transform: uppercase;
-                letter-spacing: 3px;
-                text-shadow: 0 0 30px rgba(255, 51, 51, 0.8);
-                animation: glow-red 3s ease-in-out infinite;
+                font-family: "Inter", sans-serif;
+                letter-spacing: -0.5px;
                 position: relative;
                 z-index: 2;
-                
-                // Дополнительный эффект свечения
-                &::after {
-                    content: '';
-                    position: absolute;
-                    top: -10px;
-                    left: -10px;
-                    right: -10px;
-                    bottom: -10px;
-                    background: radial-gradient(circle, rgba(255, 51, 51, 0.2) 0%, transparent 70%);
-                    animation: pulse-ring 4s ease-in-out infinite;
-                    z-index: -1;
-                }
             }
 
             .error {
-                background: rgba(255, 51, 51, 0.15);
-                border: 2px solid var(--accent-primary);
+                background: var(--accent-light);
+                border: 1px solid var(--accent-primary);
                 color: var(--accent-primary);
-                padding: 18px 24px;
-                border-radius: var(--radius-lg);
-                font-size: 15px;
+                padding: 16px 20px;
+                border-radius: var(--radius-md);
+                font-size: 14px;
                 text-align: center;
-                font-family: "Space Grotesk", sans-serif;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                animation: shake 0.5s ease-in-out, pulse-red 2s ease-in-out infinite;
+                font-family: "Inter", sans-serif;
+                font-weight: 500;
                 position: relative;
                 z-index: 2;
-                box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
-                
-                &::before {
-                    content: '⚠';
-                    position: absolute;
-                    top: -15px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    background: var(--accent-primary);
-                    color: white;
-                    width: 30px;
-                    height: 30px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 16px;
-                    box-shadow: 0 0 15px rgba(255, 51, 51, 0.5);
-                }
-                
-                &::after {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: -100%;
-                    width: 100%;
-                    height: 100%;
-                    background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.2), transparent);
-                    border-radius: var(--radius-lg);
-                    animation: shimmer 2s infinite;
-                    z-index: -1;
-                }
             }
 
             .Block {
@@ -159,71 +60,34 @@
                 z-index: 2;
 
                 .Text {
-                    font-size: 16px;
+                    font-size: 14px;
                     color: var(--text-primary);
-                    font-weight: 600;
+                    font-weight: 500;
                     font-family: "Inter", sans-serif;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
                 }
 
                 .input {
-                    font-size: 16px;
-                    border: 2px solid var(--border-primary);
-                    padding: 16px;
+                    font-size: 15px;
+                    border: 1px solid var(--border-primary);
+                    padding: 14px 16px;
                     color: var(--text-primary);
-                    background: var(--bg-secondary);
+                    background: white;
                     width: 100%;
                     box-sizing: border-box;
-                    border-radius: var(--radius-lg);
+                    border-radius: var(--radius-md);
                     transition: all var(--transition-normal);
                     font-family: "Inter", sans-serif;
-                    text-transform: none;
                     position: relative;
-                    
-                    &::before {
-                        content: '';
-                        position: absolute;
-                        top: 0;
-                        left: -100%;
-                        width: 100%;
-                        height: 100%;
-                        background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.1), transparent);
-                        transition: left var(--transition-slow);
-                        z-index: -1;
-                    }
                     
                     &:focus {
                         outline: none;
                         border-color: var(--accent-primary);
-                        box-shadow: var(--shadow-md), 0 0 15px rgba(255, 51, 51, 0.2);
-                        
-                        &::before {
-                            left: 0;
-                        }
+                        box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
                     }
                     
                     &.error {
                         border-color: var(--accent-primary);
-                        box-shadow: var(--shadow-md), 0 0 20px rgba(255, 51, 51, 0.4);
-                        animation: shake 0.3s ease-in-out;
-                        
-                        &::before {
-                            left: 0;
-                            background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.2), transparent);
-                            animation: shimmer 1s infinite;
-                        }
-                        
-                        &::after {
-                            content: '⚠';
-                            position: absolute;
-                            top: 50%;
-                            right: 16px;
-                            transform: translateY(-50%);
-                            color: var(--accent-primary);
-                            font-size: 18px;
-                            animation: pulse 1.5s ease-in-out infinite;
-                        }
+                        box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
                     }
                     
                     &::placeholder {
@@ -268,62 +132,25 @@
             }
 
             .button {
-                background: var(--accent-gradient);
+                background: var(--accent-primary);
                 color: white;
                 border: none;
                 cursor: pointer;
-                padding: 20px;
-                font-size: 18px;
-                font-weight: 700;
+                padding: 16px;
+                font-size: 16px;
+                font-weight: 600;
                 transition: all var(--transition-normal);
-                font-family: "Space Grotesk", sans-serif;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                border-radius: var(--radius-lg);
+                font-family: "Inter", sans-serif;
+                letter-spacing: 0.5px;
+                border-radius: var(--radius-md);
                 position: relative;
                 overflow: hidden;
                 z-index: 2;
                 
-                // Внутренняя анимация
-                &::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: -100%;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(255, 255, 255, 0.2);
-                    transition: left var(--transition-slow);
-                    z-index: -1;
-                }
-                
-                // Свечение при наведении
-                &::after {
-                    content: '';
-                    position: absolute;
-                    top: -2px;
-                    left: -2px;
-                    right: -2px;
-                    bottom: -2px;
-                    background: var(--accent-gradient);
-                    border-radius: var(--radius-lg);
-                    opacity: 0;
-                    z-index: -2;
-                    transition: opacity var(--transition-normal);
-                }
-
                 &:hover {
-                    transform: translateY(-4px) scale(1.02);
-                    box-shadow: var(--shadow-lg), var(--shadow-accent);
-                    
-                    &::before {
-                        left: 100%;
-                    }
-                    
-                    &::after {
-                        opacity: 1;
-                        animation: border-pulse 2s ease-in-out infinite;
-                    }
+                    background: var(--accent-hover);
+                    transform: translateY(-2px);
+                    box-shadow: var(--shadow-md);
                 }
 
                 &:disabled {
@@ -333,44 +160,11 @@
                 }
                 
                 &:active {
-                    transform: translateY(-2px) scale(1.01);
+                    transform: translateY(0);
                 }
             }
         }
     }
-}
-
-// Ключевые анимации
-@keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    33% { transform: translateY(-15px) rotate(1deg); }
-    66% { transform: translateY(8px) rotate(-1deg); }
-}
-
-@keyframes glow-red {
-    0%, 100% { text-shadow: 0 0 30px rgba(255, 51, 51, 0.8); }
-    50% { text-shadow: 0 0 50px rgba(255, 51, 51, 1); }
-}
-
-@keyframes pulse-ring {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    50% { opacity: 0.2; transform: scale(1.2); }
-}
-
-@keyframes border-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.05); }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
 @media (max-width: 1200px) {
@@ -468,56 +262,5 @@
             transform: scale(1) !important;
             -webkit-transform: scale(1) !important;
         }
-    }
-}
-
-.errorMessage {
-    color: var(--accent-primary);
-    margin-bottom: 16px;
-    text-align: center;
-    padding: 14px 20px;
-    background: rgba(255, 51, 51, 0.15);
-    border: 2px solid var(--accent-primary);
-    border-radius: var(--radius-lg);
-    font-family: "Space Grotesk", sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    animation: shake 0.5s ease-in-out, pulse-red 2s ease-in-out infinite;
-    box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
-    position: relative;
-    overflow: hidden;
-    
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.2), transparent);
-        animation: shimmer 2s infinite;
-        z-index: -1;
-    }
-}
-
-@keyframes pulse-red {
-    0%, 100% {
-        opacity: 0.3;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.6;
-        transform: scale(1.05);
-    }
-}
-
-@keyframes shimmer {
-    0% {
-        left: -100%;
-    }
-    100% {
-        left: 100%;
     }
 }

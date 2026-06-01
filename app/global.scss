@@ -1,40 +1,40 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@100..800&display=swap");
 
-// CSS Variables для темной темы с красными акцентами
+// CSS Variables для светлой темы с красными акцентами
 :root {
   // Основные цвета
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a1a;
-  --bg-tertiary: #252525;
-  --bg-card: #161616;
-  --bg-hover: #2a2a2a;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F7F7F7;
+  --bg-tertiary: #F0F0F0;
+  --bg-card: #FFFFFF;
+  --bg-hover: #F0F0F0;
   
   // Текстовые цвета
-  --text-primary: #ffffff;
-  --text-secondary: #b0b0b0;
-  --text-muted: #808080;
-  --text-accent: #ff3333;
+  --text-primary: #1A1A1A;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --text-accent: #F44336;
   
   // Красные акценты
-  --accent-primary: #ff3333;
-  --accent-secondary: #cc0000;
-  --accent-hover: #ff5555;
-  --accent-light: #ffcccc;
-  --accent-gradient: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
+  --accent-primary: #F44336;
+  --accent-secondary: #E53935;
+  --accent-hover: #E53935;
+  --accent-light: #FFEBEE;
+  --accent-gradient: linear-gradient(135deg, #F44336 0%, #E53935 100%);
   
   // Границы и тени
-  --border-primary: #333333;
-  --border-secondary: #404040;
-  --border-accent: #ff3333;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-accent: 0 0 20px rgba(255, 51, 51, 0.3);
+  --border-primary: #E0E0E0;
+  --border-secondary: #D0D0D0;
+  --border-accent: #F44336;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --shadow-accent: 0 0 20px rgba(244, 67, 54, 0.15);
   
   // Радиусы
-  --radius-sm: 6px;
+  --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-lg: 20px;
   --radius-xl: 24px;
   
   // Анимации
@@ -57,7 +57,7 @@ body {
     overflow-y: auto;
     background: var(--bg-primary);
     color: var(--text-primary);
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
 }
 
 // Современные классы для кнопок
@@ -65,40 +65,25 @@ body {
     padding: 12px 24px;
     border: none;
     border-radius: var(--radius-md);
-    font-family: "Space Grotesk", sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
     transition: all var(--transition-normal);
-    text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
     overflow: hidden;
-    
-    &:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        transition: left var(--transition-slow);
-    }
-    
-    &:hover:before {
-        left: 100%;
-    }
 }
 
 .btn-primary {
-    background: var(--accent-gradient);
+    background: var(--accent-primary);
     color: white;
     box-shadow: var(--shadow-sm);
     
     &:hover {
+        background: var(--accent-hover);
         transform: translateY(-2px);
-        box-shadow: var(--shadow-md), var(--shadow-accent);
+        box-shadow: var(--shadow-md);
     }
     
     &:active {
@@ -107,7 +92,7 @@ body {
 }
 
 .btn-secondary {
-    background: var(--bg-card);
+    background: white;
     color: var(--text-primary);
     border: 1px solid var(--border-primary);
     
@@ -130,13 +115,13 @@ body {
     &:hover {
         transform: translateY(-4px);
         box-shadow: var(--shadow-lg);
-        border-color: var(--border-accent);
+        border-color: var(--accent-primary);
     }
 }
 
 // Современные инпуты
 .input {
-    background: var(--bg-secondary);
+    background: white;
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-md);
     padding: 12px 16px;
@@ -148,7 +133,7 @@ body {
     &:focus {
         outline: none;
         border-color: var(--accent-primary);
-        box-shadow: 0 0 0 3px rgba(255, 51, 51, 0.1);
+        box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
     }
     
     &::placeholder {

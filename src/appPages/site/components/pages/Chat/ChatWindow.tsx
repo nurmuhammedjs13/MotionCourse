@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../redux/store';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
-import { useGetGroupDetailFullQuery, useGetOrCreateDialogMutation, useGetMessagesQuery, useMarkAsReadMutation, useTestMeQuery } from '../../../../../redux/api/chat';
+import { useGetGroupDetailFullQuery, useGetOrCreateDialogMutation, useGetMessagesQuery, useMarkAsReadMutation, useTestMeQuery, useGetMyChatsQuery } from '../../../../../redux/api/chat';
 import { GroupMember } from '../../../../../redux/api/chat/types';
 import { useWebSocket } from '../../../../../hooks/useWebSocket';
 import { useDispatch } from 'react-redux';
@@ -26,6 +26,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ groupId, title, onBack, onSelec
   const [isAtBottom, setIsAtBottom] = useState(true); // По умолчанию считаем что внизу
   const [showScrollButton, setShowScrollButton] = useState(false); // Для управления анимацией
   const [createDialog] = useGetOrCreateDialogMutation();
+  const { refetch: refetchChats } = useGetMyChatsQuery();
 
   // Callback для обновления состояния скролла
   const handleScrollStateChange = (atBottom: boolean) => {
@@ -103,16 +104,25 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ groupId, title, onBack, onSelec
       return;
     }
 
+    console.log('[ChatWindow] Creating dialog with user:', member.user_id, member.username);
+
     try {
       const result = await createDialog(member.user_id).unwrap();
-      
+
+      console.log('[ChatWindow] Dialog creation result:', result);
+
       // Бэкенд возвращает { dialog_id: number, title: string, created: boolean }
       if (result?.dialog_id && onSelectChat) {
+        // Перезагружаем список чатов чтобы новый чат появился сразу
+        refetchChats();
+
         setShowMembers(false); // Закрываем панель участников
         onSelectChat(result.dialog_id, result.title);
+      } else {
+        console.error('[ChatWindow] Invalid dialog result:', result);
       }
     } catch (error) {
-      console.error('Failed to create dialog:', error);
+      console.error('[ChatWindow] Failed to create dialog:', error);
     }
   };
 

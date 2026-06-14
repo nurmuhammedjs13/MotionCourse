@@ -14,7 +14,7 @@ const chatBaseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_CHAT_API,
   prepareHeaders: (headers) => {
     const token = Cookies.get('access_token');
-    
+
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -88,9 +88,9 @@ export const chatApi = createApi({
           formData.append('file', file);
           
         }
-        
-        for (const [key, value] of formData.entries()) {
-          
+
+        for (const [, value] of formData.entries()) {
+          console.log('[chatApi] FormData entry:', value);
         }
         
         return {
@@ -149,6 +149,30 @@ export const chatApi = createApi({
         return '/test/me';
       },
     }),
+
+    deleteGroup: builder.mutation<string, number>({
+      query: (groupId) => ({
+        url: `/groups/${groupId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Group', 'Chat'],
+    }),
+
+    deleteDialogForSelf: builder.mutation<{ message: string; dialog_id: number }, number>({
+      query: (dialogId) => ({
+        url: `/dialogs/${dialogId}/clear`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Chat'],
+    }),
+
+    deleteDialogForAll: builder.mutation<string, number>({
+      query: (dialogId) => ({
+        url: `/dialogs/${dialogId}/destroy`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Group', 'Chat'],
+    }),
   }),
 });
 
@@ -167,4 +191,7 @@ export const {
   useMarkAsReadMutation,
   useGetOrCreateDialogMutation,
   useTestMeQuery,
+  useDeleteGroupMutation,
+  useDeleteDialogForSelfMutation,
+  useDeleteDialogForAllMutation,
 } = chatApi;

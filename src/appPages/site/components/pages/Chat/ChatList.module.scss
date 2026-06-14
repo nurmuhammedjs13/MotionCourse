@@ -384,6 +384,195 @@
     margin-bottom: 8px;
   }
 
+  .chatHeaderRight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .deleteButton {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+
+    &:hover {
+      color: #ff4444;
+      background: rgba(255, 68, 68, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .spinnerSmall {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-primary);
+      border-top: 2px solid var(--accent-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  .chatItem:hover .deleteButton {
+    opacity: 1;
+  }
+
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeInModal 0.3s ease-out;
+  }
+
+  .deleteModal {
+    background: white;
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-lg);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUpModal 0.3s ease-out;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .modalContent {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .modalTitle {
+    color: var(--accent-primary);
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.5px;
+  }
+
+  .modalMessage {
+    color: var(--text-primary);
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: "Inter", sans-serif;
+    text-align: center;
+  }
+
+  .modalButtons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .modalCancel {
+    position: relative;
+    color: var(--text-primary);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 12px 24px;
+    text-align: center;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    background: white;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--bg-hover);
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .modalDelete {
+    position: relative;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 12px 24px;
+    text-align: center;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    background: #ff4444;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+
+    &:hover:not(:disabled) {
+      background: #cc0000;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  @keyframes fadeInModal {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUpModal {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
   .chatTitle {
     color: var(--text-primary);
     font-size: 16px;

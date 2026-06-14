@@ -145,27 +145,34 @@ const chatSlice = createSlice({
     
     addMessage: (state, action: PayloadAction<AddMessagePayload>) => {
       const { groupId, message } = action.payload;
+      console.log('[chatSlice] addMessage called:', { groupId, messageId: message.id, text: message.text });
+
       if (!state.messages[groupId]) {
         state.messages[groupId] = [];
+        console.log('[chatSlice] Created new messages array for groupId:', groupId);
       }
-      
+
       const existingMessageIndex = state.messages[groupId].findIndex(
         msg => msg.id === message.id
       );
-      
+
       if (existingMessageIndex === -1) {
         state.messages[groupId].push(message);
+        console.log('[chatSlice] Added new message. Total messages:', state.messages[groupId].length);
       } else {
         state.messages[groupId][existingMessageIndex] = message;
+        console.log('[chatSlice] Updated existing message at index:', existingMessageIndex);
       }
-      
+
       const chatIndex = state.chats.findIndex(chat => chat.group_id === groupId);
       if (chatIndex !== -1) {
         state.chats[chatIndex].last_message = message;
-        
+
         if (message.user_id && state.chats[chatIndex].unread_count > 0) {
         }
       }
+
+      console.log('[chatSlice] Messages for groupId', groupId, ':', state.messages[groupId]);
     },
 
     addIncomingMessage: (state, action: PayloadAction<{ groupId: number; message: Message; currentUserId: number }>) => {
@@ -310,35 +317,57 @@ const chatSlice = createSlice({
 
           case WS_EVENTS.MESSAGE: {
             const msg = (backendPayload as { message?: Message }).message;
-            if (!msg || typeof msg.group_id !== 'number') break;
+            console.log('[chatSlice] Received MESSAGE event:', msg);
+
+            if (!msg || typeof msg.group_id !== 'number') {
+              console.log('[chatSlice] MESSAGE event: invalid message data');
+              break;
+            }
 
             const groupId = msg.group_id;
             if (!state.messages[groupId]) {
               state.messages[groupId] = [];
             }
-            
+
             // Mark message as delivered when received
             msg.delivered = true;
-            
+
             const existingMessageIndex = state.messages[groupId].findIndex(
               m => m.id === msg.id
             );
-            
+
+            console.log('[chatSlice] MESSAGE event: existingMessageIndex =', existingMessageIndex, 'msg.id =', msg.id);
+
             if (existingMessageIndex === -1) {
               state.messages[groupId].push(msg);
+              console.log('[chatSlice] MESSAGE event: added new message');
             } else {
               state.messages[groupId][existingMessageIndex] = msg;
+              console.log('[chatSlice] MESSAGE event: replaced existing message (optimistic -> real)');
             }
 
             const chatIndex = state.chats.findIndex(chat => chat.group_id === groupId);
             if (chatIndex !== -1) {
               state.chats[chatIndex].last_message = msg;
-              
+
               // Increment unread count if message is not from current user
               const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
               if (msg.user_id !== currentUser.id) {
                 state.chats[chatIndex].unread_count += 1;
               }
+            }
+            break;
+          }
+
+          case 'message_status': {
+            // Обрабатываем статус сообщения от бэкенда
+            const messageData = backendPayload as unknown as { message_id: number; status: string };
+            console.log('[chatSlice] Received message_status:', messageData);
+
+            if (messageData.status === 'sent' && messageData.message_id) {
+              // Сообщение отправлено успешно, нужно загрузить его через API
+              // Это будет обработано в компоненте через refetch
+              console.log('[chatSlice] Message sent, ID:', messageData.message_id);
             }
             break;
           }

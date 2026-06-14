@@ -111,5 +111,6 @@ export interface MessageData {
 export interface DialogResponse {
   dialog_id: number;
   created: boolean;
-  title: string;
+  title?: string;
+  message?: string;
 }

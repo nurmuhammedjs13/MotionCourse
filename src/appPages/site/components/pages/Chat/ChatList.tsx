@@ -1,7 +1,7 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useGetMyChatsQuery, useGetGroupDetailFullQuery } from '../../../../../redux/api/chat';
+import { useGetMyChatsQuery, useGetGroupDetailFullQuery, useDeleteGroupMutation, useDeleteDialogForSelfMutation } from '../../../../../redux/api/chat';
 import { setActiveGroup, resetUnreadCount, clearUnreadCountOverrides } from '../../../../../redux/slices/chatSlice';
 import { RootState } from '../../../../../redux/store';
 import { ChatItem } from '../../../../../redux/api/chat/types';
@@ -18,6 +18,14 @@ const ChatList: React.FC<ChatListProps> = ({ onSelectChat, activeGroupId }) => {
   const { unreadCountOverrides } = useSelector((state: RootState) => state.chat);
   const { data: chats = [], isLoading, error } = useGetMyChatsQuery();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [deleteGroup] = useDeleteGroupMutation();
+  const [deleteDialogForSelf] = useDeleteDialogForSelfMutation();
+  const [deletingChatId, setDeletingChatId] = useState<number | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; chatId: number | null; chatTitle: string }>({
+    isOpen: false,
+    chatId: null,
+    chatTitle: ''
+  });
 
   useEffect(() => {
     if (!user.id || !user.username) return;
@@ -155,14 +163,64 @@ const ChatList: React.FC<ChatListProps> = ({ onSelectChat, activeGroupId }) => {
   }, [chats, unreadCountOverrides]);
 
   const handleSelectChat = (groupId: number, title: string) => {
-    
+
     const scrollContainer = scrollContainerRef.current;
     if (scrollContainer) {
       localStorage.setItem('chatListScrollTop', scrollContainer.scrollTop.toString());
     }
-    
+
     dispatch(setActiveGroup({ groupId, title }));
     onSelectChat(groupId, title);
+  };
+
+  const handleDeleteChat = (e: React.MouseEvent, chat: ChatItem) => {
+    e.stopPropagation();
+    setDeleteModal({
+      isOpen: true,
+      chatId: chat.group_id,
+      chatTitle: chat.title
+    });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteModal.chatId) return;
+
+    setDeletingChatId(deleteModal.chatId);
+
+    try {
+      const chat = sortedChats.find(c => c.group_id === deleteModal.chatId);
+      if (!chat) return;
+
+      if (chat.is_private) {
+        await deleteDialogForSelf(chat.group_id).unwrap();
+      } else {
+        await deleteGroup(chat.group_id).unwrap();
+      }
+
+      if (activeGroupId === deleteModal.chatId) {
+        const remainingChats = sortedChats.filter(c => c.group_id !== deleteModal.chatId);
+        if (remainingChats.length > 0) {
+          const nextChat = remainingChats[0];
+          handleSelectChat(nextChat.group_id, nextChat.title);
+        } else {
+          dispatch(setActiveGroup({ groupId: 0, title: '' }));
+        }
+      }
+
+      setDeleteModal({ isOpen: false, chatId: null, chatTitle: '' });
+    } catch (error: unknown) {
+      console.error('Failed to delete chat:', error);
+      const err = error as { status?: number; data?: { detail?: string }; message?: string };
+      console.error('Error status:', err?.status);
+      console.error('Error data:', err?.data);
+      alert(`Не удалось удалить чат: ${err?.data?.detail || err?.message || 'Неизвестная ошибка'}`);
+    } finally {
+      setDeletingChatId(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal({ isOpen: false, chatId: null, chatTitle: '' });
   };
 
   const formatTime = (dateString: string) => {
@@ -280,9 +338,28 @@ const ChatList: React.FC<ChatListProps> = ({ onSelectChat, activeGroupId }) => {
                       <div className={styles.chatInfo}>
                         <div className={styles.chatHeader}>
                           <h4 className={styles.chatTitle}>{displayName}</h4>
-                          <span className={styles.chatTime}>
-                            {chat.last_message ? formatTime(chat.last_message.created_date) : ''}
-                          </span>
+                          <div className={styles.chatHeaderRight}>
+                            {chat.is_private && (
+                              <button
+                                className={styles.deleteButton}
+                                onClick={(e) => handleDeleteChat(e, chat)}
+                                disabled={deletingChatId === chat.group_id}
+                                title="Удалить чат"
+                              >
+                                {deletingChatId === chat.group_id ? (
+                                  <span className={styles.spinnerSmall}></span>
+                                ) : (
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                  </svg>
+                                )}
+                              </button>
+                            )}
+                            <span className={styles.chatTime}>
+                              {chat.last_message ? formatTime(chat.last_message.created_date) : ''}
+                            </span>
+                          </div>
                         </div>
                         
                         <div className={styles.chatPreview}>
@@ -321,6 +398,35 @@ const ChatList: React.FC<ChatListProps> = ({ onSelectChat, activeGroupId }) => {
           </div>
         )}
       </div>
+
+      {deleteModal.isOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.deleteModal}>
+            <div className={styles.modalContent}>
+              <h3 className={styles.modalTitle}>Подтверждение удаления</h3>
+              <p className={styles.modalMessage}>
+                Вы уверены, что хотите удалить этот чат?
+              </p>
+              <div className={styles.modalButtons}>
+                <button
+                  className={styles.modalCancel}
+                  onClick={cancelDelete}
+                  disabled={deletingChatId !== null}
+                >
+                  Отмена
+                </button>
+                <button
+                  className={styles.modalDelete}
+                  onClick={confirmDelete}
+                  disabled={deletingChatId !== null}
+                >
+                  {deletingChatId !== null ? 'Удаление...' : 'Удалить'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

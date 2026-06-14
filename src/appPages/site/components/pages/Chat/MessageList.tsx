@@ -86,6 +86,8 @@ const MessageList: React.FC<MessageListProps> = ({ groupId, onScrollStateChange 
   const [isAtBottom, setIsAtBottom] = useState(false);
   const hasInitiallyScrolled = useRef(false);
   const prevMessagesLength = useRef(0);
+
+  console.log('[MessageList] currentMessages for groupId', groupId, ':', currentMessages?.length, 'messages');
   
   // Scroll to bottom on initial load
   useEffect(() => {
@@ -241,16 +243,20 @@ const MessageList: React.FC<MessageListProps> = ({ groupId, onScrollStateChange 
   };
 
   const formatTime = (dateString: string) => {
-    const date = new Date(dateString + 'Z');
-    return date.toLocaleTimeString('ru-RU', { 
+    // Если дата уже содержит 'Z' (UTC), не добавляем еще один
+    const dateStr = dateString.endsWith('Z') ? dateString : dateString + 'Z';
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString('ru-RU', {
       timeZone: 'Asia/Bishkek',
-      hour: '2-digit', 
-      minute: '2-digit' 
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString + 'Z');
+    // Если дата уже содержит 'Z' (UTC), не добавляем еще один
+    const dateStr = dateString.endsWith('Z') ? dateString : dateString + 'Z';
+    const date = new Date(dateStr);
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
@@ -260,8 +266,8 @@ const MessageList: React.FC<MessageListProps> = ({ groupId, onScrollStateChange 
     } else if (date.toDateString() === yesterday.toDateString()) {
       return 'Вчера';
     } else {
-      return date.toLocaleDateString('ru-RU', { 
-        month: 'short', 
+      return date.toLocaleDateString('ru-RU', {
+        month: 'short',
         day: 'numeric',
         year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
       });
@@ -270,14 +276,20 @@ const MessageList: React.FC<MessageListProps> = ({ groupId, onScrollStateChange 
 
   const groupMessagesByDate = (messageList: Message[]) => {
     const groups: { [date: string]: Message[] } = {};
-    
+
+    console.log('[MessageList] groupMessagesByDate input:', messageList.length, 'messages');
+
     messageList.forEach(message => {
-      const date = new Date(message.created_date).toDateString();
+      // Корректно парсим дату независимо от формата
+      const dateStr = message.created_date.endsWith('Z') ? message.created_date : message.created_date + 'Z';
+      const date = new Date(dateStr).toDateString();
       if (!groups[date]) {
         groups[date] = [];
       }
       groups[date].push(message);
     });
+
+    console.log('[MessageList] groupMessagesByDate output:', Object.keys(groups).length, 'dates');
 
     return groups;
   };
@@ -538,7 +550,17 @@ const MessageList: React.FC<MessageListProps> = ({ groupId, onScrollStateChange 
   }
 
   const groupMessages = messages[groupId] || [];
-  const groupedMessages = groupMessagesByDate(groupMessages);
+  console.log('[MessageList] groupMessages:', groupMessages);
+
+  // Сортируем сообщения по created_date (старые сначала, новые в конце)
+  const sortedMessages = [...groupMessages].sort((a, b) => {
+    return new Date(a.created_date).getTime() - new Date(b.created_date).getTime();
+  });
+
+  console.log('[MessageList] sortedMessages:', sortedMessages);
+
+  const groupedMessages = groupMessagesByDate(sortedMessages);
+  console.log('[MessageList] groupedMessages:', groupedMessages);
 
  
 

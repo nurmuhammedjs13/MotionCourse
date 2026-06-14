@@ -1,5 +1,5 @@
 .Upload {
-    background: black;
+    background: rgb(255, 255, 255);
     position: relative;
 
     .toast {
@@ -537,7 +537,7 @@
                     .cancel,
                     .load {
                         position: relative;
-                        color: white;
+                        color: rgb(43, 43, 43);
                         text-decoration: none;
                         cursor: pointer;
                         padding: 12px 24px; // Унифицируем padding
@@ -552,7 +552,7 @@
                         flex: 1;
                         min-width: 120px; // Унифицируем min-width
 
-                        background: black;
+                        background: rgb(255, 255, 255);
                         text-transform: uppercase;
                         letter-spacing: 1px;
 

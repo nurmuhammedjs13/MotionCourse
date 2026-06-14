@@ -117,7 +117,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ groupId, title, onBack, onSelec
         refetchChats();
 
         setShowMembers(false); // Закрываем панель участников
-        onSelectChat(result.dialog_id, result.title);
+        onSelectChat(result.dialog_id, result.title || 'Dialog');
       } else {
         console.error('[ChatWindow] Invalid dialog result:', result);
       }
